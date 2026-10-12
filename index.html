@@ -48,7 +48,7 @@ async function loadMarket(){
   if(result.code!=='00000'||!result.data||!result.data.length)
    throw new Error('No market data returned');
   const ticker=result.data[0];
-  const price=Number(ticker.lastPr||ticker.last);
+  const price=Number(ticker.lastPrice||ticker.lastPr||ticker.last);
   if(!Number.isFinite(price)||price<=0) throw new Error('Invalid price');
   document.getElementById('price').textContent=
    '$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
