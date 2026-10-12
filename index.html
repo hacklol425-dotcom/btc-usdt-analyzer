@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BTC/USDT Analyzer</title>
+<style>
+body{margin:0;background:#101522;color:#edf2ff;font-family:Arial,sans-serif;padding:18px}
+main{max-width:650px;margin:auto}
+.card{background:#1b2436;padding:16px;border-radius:14px;margin:12px 0}
+h1{font-size:25px}
+.price{font-size:30px;font-weight:bold;color:#67e8b5}
+button{background:#5278ff;color:white;border:0;border-radius:9px;padding:12px;font-size:16px}
+small,.muted{color:#aab5cc}
+</style>
+</head>
+<body>
+<main>
+<h1>₿ BTC/USDT Analyzer</h1>
+<p class="muted">Bitget Spot · 5-minute market monitor</p>
+<div class="card">
+<small>Latest BTC/USDT price</small>
+<div class="price" id="price">Loading...</div>
+<p id="status">Connecting to public market data...</p>
+<button onclick="loadMarket()">Refresh price</button>
+</div>
+<div class="card">
+<h3>Analyzer status</h3>
+<p id="candle">Waiting for market data...</p>
+<p class="muted">Signals and backtesting will be added in the next step.</p>
+</div>
+<div class="card">
+<h3>Safety</h3>
+<p>This app only reads public market data. It cannot place trades or access your Bitget account.</p>
+</div>
+</main>
+<script>
+async function loadMarket(){
+ const status=document.getElementById('status');
+ status.textContent='Fetching public data...';
+ try{
+  const response=await fetch(
+   'https://api.bitget.com/api/v3/market/tickers?category=SPOT&symbol=BTCUSDT'
+  );
+  if(!response.ok) throw new Error('Market request failed');
+  const result=await response.json();
+  if(result.code!=='00000'||!result.data||!result.data.length)
+   throw new Error('No market data returned');
+  const ticker=result.data[0];
+  const price=Number(ticker.lastPr||ticker.last);
+  if(!Number.isFinite(price)||price<=0) throw new Error('Invalid price');
+  document.getElementById('price').textContent=
+   '$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('candle').textContent=
+   'Latest public market price received: '+new Date().toLocaleTimeString();
+  status.textContent='Connected to Bitget public market data.';
+ }catch(error){
+  status.textContent='Could not load data. Check internet or try again.';
+  document.getElementById('candle').textContent=
+   'Details: '+error.message+'. The browser may block the request.';
+ }
+}
+loadMarket();
+</script>
+</body>
+</html>
