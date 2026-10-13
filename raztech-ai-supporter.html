@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101522">
+<title>RazTech Futures Intelligence</title>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<style>
+:root{--bg:#101522;--panel:#1b2436;--panel2:#11192b;--line:#293449;--text:#edf2ff;--muted:#aab5cc;--green:#67e8b5;--red:#ff8585;--yellow:#facc15;--purple:#c084fc;--blue:#5278ff}
+*{box-sizing:border-box}body{margin:0;padding:16px;background:radial-gradient(ellipse at top,#182744 0%,var(--bg) 48%);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;line-height:1.45}main{max-width:1120px;margin:auto}h1{font-size:clamp(22px,5vw,30px);margin:8px 0}h2{font-size:21px;margin:0 0 14px}h3{margin:0 0 12px;font-size:17px}.muted,small{color:var(--muted)}p{line-height:1.55}.card{background:linear-gradient(145deg,rgba(27,36,54,.98),rgba(17,25,43,.98));padding:18px;border-radius:16px;margin:14px 0;overflow:hidden;border:1px solid #2c3b57;box-shadow:0 10px 28px rgba(0,0,0,.12)}.brand{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 5px}.emblem{width:62px;height:62px;flex-shrink:0}.brandname{margin:0;font-size:clamp(25px,6vw,36px);font-weight:900;letter-spacing:1px;background:linear-gradient(100deg,#00e5ff,#8b5cf6,#ff4fd8);-webkit-background-clip:text;background-clip:text;color:transparent}.tagline{margin:4px 0 0;color:#9ba9c9;font-size:10px;letter-spacing:2px;text-transform:uppercase}.nav{display:flex;gap:8px;overflow-x:auto;padding:6px 0 12px;margin:0 0 8px}.nav button{white-space:nowrap;background:#11192b;border:1px solid #2c3b57;color:#dce5ff;padding:11px 14px;border-radius:11px;transition:background .15s,border-color .15s}.nav button.active{background:linear-gradient(110deg,#3155a7,#5141a8);border-color:#6d8cff;box-shadow:0 4px 16px rgba(82,120,255,.2)}.page{display:none}.page.active{display:block}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.row>*{min-width:0}.grow{flex:1}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.metric{background:#101522;padding:12px;border-radius:9px;min-width:0;border:1px solid #253149}.metric span{display:block;color:var(--muted);font-size:12px;margin-bottom:7px}.metric strong{font-size:clamp(15px,2.8vw,19px);overflow-wrap:anywhere}.price{font-size:clamp(26px,7vw,36px);font-weight:bold;color:var(--green);overflow-wrap:anywhere}.green{color:var(--green)!important}.red{color:var(--red)!important}.yellow{color:var(--yellow)}.purple{color:var(--purple)}button,select,input{font:inherit}button{background:linear-gradient(110deg,#4268d8,#6750d5);color:white;border:0;border-radius:10px;padding:11px 15px;font-size:14px;font-weight:650;cursor:pointer;box-shadow:0 4px 12px rgba(40,70,160,.15)}button:disabled{opacity:.55;cursor:wait}button.secondary{background:#263552}button.danger{background:#9d343d}select,input{background:#101522;color:var(--text);border:1px solid #39445a;border-radius:8px;padding:10px;max-width:100%;min-width:0}label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}.field{min-width:120px;flex:1}.notice{font-size:12px;line-height:1.6;color:var(--muted)}#chart{width:100%;height:340px}.pill{display:inline-block;padding:5px 8px;border-radius:7px;background:#11192b;border:1px solid #34415c;font-size:12px}.list{padding-left:20px;line-height:1.7}.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:540px;font-size:13px}th,td{text-align:left;padding:10px;border-bottom:1px solid #334058}th{color:#cbd5ef;background:#11192b}.signalbox{padding:14px;border-radius:10px;background:#101522;border:1px solid #34415c}.bar{height:8px;background:#303b50;border-radius:20px;overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,#00e5ff,#8b5cf6)}.statusline{line-height:1.6;overflow-wrap:anywhere}.smallbtn{padding:7px 9px;font-size:12px}.checkrow{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}.checkrow input{min-width:auto}.footer{font-size:11px;color:var(--muted);text-align:center;padding:24px 6px;border-top:1px solid #253149;margin-top:22px}.hidden{display:none!important}
+.ai-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+.chat-shell{display:flex;flex-direction:column;min-height:58vh}
+.chat-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.ai-status{display:inline-flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
+.ai-dot{width:8px;height:8px;border-radius:50%;background:#67e8b5;display:inline-block;box-shadow:0 0 10px rgba(103,232,181,.4)}
+.chat-messages{display:flex;flex-direction:column;gap:12px;padding:16px 2px;min-height:260px;max-height:52vh;overflow:auto;scroll-behavior:smooth}
+.chat-msg{max-width:92%;padding:12px 14px;border-radius:14px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55;font-size:14px}
+.chat-msg.assistant{align-self:flex-start;background:#111a2b;border:1px solid #2a3955;border-bottom-left-radius:4px}
+.chat-msg.user{align-self:flex-end;background:#2d4380;border:1px solid #4968b6;border-bottom-right-radius:4px}
+.chat-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#9fb2db;display:block;margin-bottom:5px;font-weight:700}
+.chat-compose{display:flex;gap:8px;align-items:flex-end;padding-top:12px;border-top:1px solid var(--line)}
+.chat-compose textarea{flex:1;min-width:0;resize:vertical;min-height:46px;max-height:140px;background:#0e1626;color:var(--text);border:1px solid #3a4967;border-radius:12px;padding:12px;font:inherit}
+.chat-compose button{min-height:46px}
+.prompt-chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.prompt-chip{background:#111a2b;border:1px solid #344563;color:#cbd8f5;border-radius:999px;padding:8px 11px;font-size:12px;box-shadow:none}
+.chat-disclaimer{font-size:11px;color:var(--muted);line-height:1.55}
+@media(max-width:450px){body{padding:8px}.card{padding:13px}.chat-msg{max-width:98%}.chat-compose{align-items:stretch}.chat-compose button{padding:10px}.brand{padding:8px 3px}}
+@media(min-width:760px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:13px}.grid3{grid-template-columns:repeat(3,minmax(0,1fr))}.card{padding:18px}}@media(max-width:450px){body{padding:8px}.card{padding:12px}#chart{height:285px}.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}.emblem{width:52px;height:52px}}
+
+/* Mobile layout fixes: prevent the price/status area from collapsing into a thin column. */
+#dashboard > .card:first-of-type > .row{display:grid;grid-template-columns:minmax(0,1fr);align-items:start;gap:14px}
+#dashboard > .card:first-of-type > .row > .grow{width:100%;min-width:0;flex:none}
+#dashboard #price{display:block;width:100%;white-space:nowrap;overflow-wrap:normal;word-break:normal;font-size:clamp(25px,7.5vw,36px);letter-spacing:-.6px}
+#dashboard #marketStatus{width:100%;max-width:100%;overflow-wrap:break-word;word-break:normal}
+#dashboard > .card:first-of-type > .row .field{width:100%;max-width:none!important;min-width:0}
+#dashboard > .card:first-of-type > .row #refreshBtn{width:100%;min-height:46px}
+#dashboard .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:760px){#dashboard > .card:first-of-type > .row{grid-template-columns:minmax(0,1fr) 180px auto;align-items:end}#dashboard > .card:first-of-type > .row .field{max-width:180px!important}#dashboard > .card:first-of-type > .row #refreshBtn{width:auto}#dashboard .grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:360px){#dashboard #price{font-size:24px;letter-spacing:-.8px}.card{padding:12px}}
+</style>
+</head>
+<body>
+<header class="brand">
+<svg class="emblem" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RazTech trading logo">
+<defs><linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="50%" stop-color="#8064ff"/><stop offset="100%" stop-color="#ff4fd8"/></linearGradient></defs>
+<circle cx="50" cy="50" r="46" fill="#0b1020" stroke="url(#ring)" stroke-width="3"/><circle cx="50" cy="50" r="39" fill="none" stroke="#283652"/>
+<g stroke-width="2.5" stroke-linecap="round"><path d="M27 53V67M22 58H32V64H22Z" fill="#00e5ff" stroke="#00e5ff"/><path d="M42 37V60M37 43H47V53H37Z" fill="#8064ff" stroke="#8064ff"/><path d="M57 30V49M52 34H62V43H52Z" fill="#00e5ff" stroke="#00e5ff"/><path d="M72 22V40M67 27H77V34H67Z" fill="#ff4fd8" stroke="#ff4fd8"/><path d="M20 47L38 35L51 39L75 18M64 18H75V29" fill="none" stroke="#fff"/></g></svg>
+<div><h1 class="brandname">RazTech</h1><p class="tagline">Trade the trend · Analyze before acting</p></div>
+</header>
+<main>
+<nav class="nav" aria-label="RazTech pages">
+<button class="active" data-page="dashboard">Dashboard</button><button data-page="analysis">Technical Analysis</button><button data-page="assistant">AI Assistant ✦</button><button data-page="risk">Risk Manager</button><button data-page="backtest">Backtest Lab</button><button data-page="history">Trade Journal</button><button data-page="settings">Settings & Help</button>
+</nav>
+
+<section id="dashboard" class="page active">
+<h1>Futures Intelligence Dashboard</h1>
+<p class="muted">BTCUSDT perpetual · Public Bitget market data · Analysis only, no live orders</p>
+<div class="card">
+<div class="row"><div class="grow"><h3>BTCUSDT Futures Price</h3><div class="price" id="price">Loading...</div><p id="marketStatus" class="muted statusline">Connecting to Bitget public market data…</p></div><div class="field" style="max-width:180px"><label for="timeframe">Chart timeframe</label><select id="timeframe" style="width:100%"><option value="1m">1 minute</option><option value="5m" selected>5 minutes</option><option value="15m">15 minutes</option><option value="1H">1 hour</option><option value="4H">4 hours</option></select></div><button id="refreshBtn">Refresh data</button></div>
+<div class="grid" style="margin-top:12px"><div class="metric"><span>24h change</span><strong id="change24">—</strong></div><div class="metric"><span>24h high</span><strong id="high24">—</strong></div><div class="metric"><span>24h low</span><strong id="low24">—</strong></div><div class="metric"><span>24h volume</span><strong id="vol24">—</strong></div></div>
+</div>
+<div class="card"><h3>BTCUSDT · Candles and Indicators</h3><p class="notice">Only completed candles are used for signals. Current unfinished candle is omitted to reduce repainting.</p><div class="legend muted">🟢 Bullish · 🔴 Bearish · <span class="yellow">━ SMA 20</span> · <span class="purple">━ SMA 50</span></div><div id="chart"></div><p id="candleInfo" class="muted statusline">Waiting for candles…</p></div>
+<div class="grid">
+<div class="card"><h3>Market trend</h3><div class="metric"><span>Trend assessment</span><strong id="trendState">—</strong></div><p id="trendExplain" class="muted statusline">Waiting for indicators.</p></div>
+<div class="card"><h3>Strategy signal</h3><div class="signalbox"><span class="muted">Current assessment</span><h2 id="signalState">WAITING</h2><p id="signalExplain" class="muted statusline">Loading data.</p></div><p class="notice">A signal is a rule-based estimate, not a guarantee. “NO TRADE” is a valid outcome.</p></div>
+</div>
+<div class="card"><h3>Quick indicator snapshot</h3><div class="grid"><div class="metric"><span>SMA 20</span><strong id="sma20">—</strong></div><div class="metric"><span>SMA 50</span><strong id="sma50">—</strong></div><div class="metric"><span>RSI (14)</span><strong id="rsi">—</strong></div><div class="metric"><span>ATR (14)</span><strong id="atr">—</strong></div></div><p id="patternInfo" class="muted statusline">Pattern analysis will appear when data is loaded.</p></div>
+</section>
+
+<section id="analysis" class="page">
+<h1>Technical Market Analysis</h1><p class="muted">Transparent indicator and candlestick checks using public Bitget Futures data. Ask the separate AI Assistant page for natural-language explanations.</p>
+<div class="card"><h3>Analysis checklist</h3><div id="analysisChecklist" class="statusline">Waiting for market data…</div><div class="bar"><span id="confluenceBar"></span></div><p class="notice">Confluence score is a count of rules that currently agree, not a probability of winning.</p></div>
+<div class="grid2">
+<div class="card"><h3>Candlestick pattern scan</h3><div id="patternList" class="statusline muted">Waiting for candles.</div></div>
+<div class="card"><h3>Indicator interpretation</h3><div id="indicatorInterpretation" class="statusline muted">Waiting for indicators.</div></div>
+</div>
+<div class="card"><h3>Multi-timeframe trend check</h3><button id="multiBtn">Analyze 1m / 5m / 15m / 1H</button><p class="notice">This fetches each timeframe separately. Data availability and network/CORS rules can affect results.</p><div id="multiResults" class="statusline muted">Not analyzed yet.</div></div>
+<div class="card"><h3>Market data limits</h3><p class="notice">The browser fetches Bitget public endpoints directly. If your browser or host blocks cross-origin requests, the page needs a small server-side proxy. This analysis does not inspect private account positions, liquidation queues, news, or social media.</p></div>
+</section>
+
+
+<section id="assistant" class="page">
+<h1>RazTech AI Assistant</h1>
+<p class="muted">Ask questions about market structure, indicators, candlestick patterns, trading concepts, and risk. The assistant can use the market snapshot shown below when your dashboard data is available.</p>
+<div class="grid">
+  <div class="metric"><span>Market</span><strong>BTCUSDT Perpetual</strong></div>
+  <div class="metric"><span>Current displayed price</span><strong id="aiMarketPrice">—</strong></div>
+  <div class="metric"><span>Chart timeframe</span><strong id="aiMarketTimeframe">5m</strong></div>
+  <div class="metric"><span>Rule-based signal</span><strong id="aiMarketSignal">—</strong></div>
+</div>
+<div class="card chat-shell">
+  <div class="chat-top">
+    <div><h3 style="margin-bottom:4px">Chat with RazTech AI</h3><span class="ai-status"><span class="ai-dot"></span><span id="aiConnectionStatus">Backend connection not checked</span></span></div>
+    <button id="aiClear" class="secondary smallbtn" type="button">Clear chat</button>
+  </div>
+  <div class="prompt-chips" aria-label="Suggested questions">
+    <button class="prompt-chip" type="button" data-prompt="Explain the current BTCUSDT market snapshot in simple English.">Explain the market</button>
+    <button class="prompt-chip" type="button" data-prompt="Explain RSI and SMA 20/SMA 50 in simple English.">Explain indicators</button>
+    <button class="prompt-chip" type="button" data-prompt="How can I plan a trade with a stop-loss and a small account balance?">Risk management</button>
+    <button class="prompt-chip" type="button" data-prompt="What signs would make it safer to wait instead of entering a trade?">When to wait</button>
+  </div>
+  <div id="aiMessages" class="chat-messages" role="log" aria-live="polite" aria-label="AI conversation">
+    <div class="chat-msg assistant"><span class="chat-label">RazTech AI</span>Hello! Ask me about BTCUSDT, technical indicators, candle patterns, or trading risk. I will explain things in simple English. I cannot guarantee a winning trade or see your private Bitget account.</div>
+  </div>
+  <form id="aiChatForm" class="chat-compose">
+    <textarea id="aiQuestion" maxlength="2000" rows="2" aria-label="Your question" placeholder="Ask RazTech AI a question…" required></textarea>
+    <button id="aiSend" type="submit">Send</button>
+  </form>
+  <p class="chat-disclaimer">AI answers can be wrong or out of date. Verify market data and never treat an AI response as a guaranteed signal. This assistant does not place orders or access your Bitget account. Do not enter passwords, API keys, or private account details.</p>
+</div>
+<div class="card">
+  <h3>AI setup status</h3>
+  <p id="aiSetupHelp" class="statusline muted">The chat needs a secure backend deployed online. Opening this HTML file directly from your phone will not run the backend by itself.</p>
+  <button id="aiTestConnection" type="button" class="secondary">Test AI connection</button>
+</div>
+</section>
+
+<section id="risk" class="page">
+<h1>Risk Manager</h1><p class="muted">Position planning calculator. Values are estimates, not exchange order instructions.</p>
+<div class="card"><h3>Calculate a planned trade</h3><div class="grid">
+<div><label for="account">Account equity (USDT)</label><input id="account" type="number" min="0" step="0.01" value="2"></div>
+<div><label for="riskPct">Risk per trade (%)</label><input id="riskPct" type="number" min="0.1" max="100" step="0.1" value="1"></div>
+<div><label for="entry">Entry price</label><input id="entry" type="number" min="0" step="0.01" placeholder="Use current price"></div>
+<div><label for="stop">Stop-loss price</label><input id="stop" type="number" min="0" step="0.01" placeholder="Enter stop price"></div>
+<div><label for="target">Take-profit price</label><input id="target" type="number" min="0" step="0.01" placeholder="Enter target price"></div>
+<div><label for="side">Trade direction</label><select id="side" style="width:100%"><option value="long">LONG</option><option value="short">SHORT</option></select></div>
+<div><label for="leverage">Leverage (calculator)</label><select id="leverage" style="width:100%"><option value="1">1×</option><option value="2">2×</option><option value="3">3×</option><option value="5">5×</option><option value="10">10×</option></select></div>
+<div><label for="feePct">Estimated fee per side (%)</label><input id="feePct" type="number" min="0" step="0.01" value="0.06"></div>
+</div><div class="row" style="margin-top:12px"><button id="calcRisk">Calculate risk</button><button class="secondary" id="useCurrent">Use current market price</button></div><div id="riskResult" class="signalbox" style="margin-top:12px">Enter an entry and stop-loss price, then calculate.</div></div>
+<div class="card"><h3>Risk rules</h3><ul class="list"><li>Consider risking only a small, predefined percentage of account equity.</li><li>Stop-loss orders can slip and are not guaranteed to execute at the exact stop price.</li><li>Funding, fees, spread, and liquidation rules affect futures results.</li><li>Do not add margin or increase position size to chase a loss.</li><li>With a very small balance, minimum order size and fees can make trading impractical.</li></ul></div>
+</section>
+
+<section id="backtest" class="page">
+<h1>Backtest Lab</h1><p class="muted">Tests a simple SMA crossover rule on fetched public Futures candles. This is a research tool, not a forecast.</p>
+<div class="card"><h3>Backtest settings</h3><div class="row"><div class="field"><label for="startingBalance">Starting balance (USDT)</label><input id="startingBalance" type="number" min="1" step="1" value="1000" style="width:100%"></div><div class="field"><label for="feeBacktest">Fee per side (%)</label><input id="feeBacktest" type="number" min="0" step="0.01" value="0.06" style="width:100%"></div><div class="field"><label for="tradeMode">Trade direction</label><select id="tradeMode" style="width:100%"><option value="long">Long only</option><option value="both">Long and short</option></select></div></div><div class="row" style="margin-top:12px"><button id="runBacktest">Run backtest</button><span class="pill" id="btDataCount">Candles: —</span></div></div>
+<div class="grid"><div class="metric"><span>Closed trades</span><strong id="btTrades">—</strong></div><div class="metric"><span>Win rate</span><strong id="btWinRate">—</strong></div><div class="metric"><span>Profit factor</span><strong id="btProfitFactor">—</strong></div><div class="metric"><span>Net P/L after estimated fees</span><strong id="btNet">—</strong></div><div class="metric"><span>Ending equity</span><strong id="btEnd">—</strong></div><div class="metric"><span>Maximum drawdown</span><strong id="btDD">—</strong></div><div class="metric"><span>Average win</span><strong id="btAvgWin">—</strong></div><div class="metric"><span>Average loss</span><strong id="btAvgLoss">—</strong></div></div>
+<div class="card"><h3>Recent simulated trades</h3><div class="tablewrap"><table><thead><tr><th>Entry time</th><th>Exit time</th><th>Side</th><th>Entry</th><th>Exit</th><th>Net P/L</th><th>Result</th></tr></thead><tbody id="btRows"><tr><td colspan="7">Run a backtest to view trades.</td></tr></tbody></table></div><p id="btStatus" class="notice">No backtest run yet.</p></div>
+<div class="card"><h3>Backtest limitations</h3><p class="notice">Results are limited to the candles loaded by the API, and cannot establish a reliable long-term win rate. This simple model assumes close-based signals and next-candle-open execution; it does not model order-book fills, liquidation, funding, spread, or exact intrabar stop-loss behavior. Fees are estimated. Use out-of-sample testing and demo trading before considering live use.</p></div>
+</section>
+
+<section id="history" class="page">
+<h1>Trade Journal</h1><p class="muted">Manually record your demo or real trades. Entries are saved only in this browser using localStorage.</p>
+<div class="card"><h3>Add a journal record</h3><div class="grid"><div><label for="jTime">Entry date and time</label><input id="jTime" type="datetime-local" style="width:100%"></div><div><label for="jSide">Side</label><select id="jSide" style="width:100%"><option>LONG</option><option>SHORT</option></select></div><div><label for="jEntry">Entry price</label><input id="jEntry" type="number" step="any" min="0" style="width:100%"></div><div><label for="jExit">Exit price</label><input id="jExit" type="number" step="any" min="0" style="width:100%"></div><div><label for="jSize">Position size (USDT)</label><input id="jSize" type="number" step="any" min="0" value="2" style="width:100%"></div><div><label for="jFees">Total fees (USDT)</label><input id="jFees" type="number" step="any" min="0" value="0" style="width:100%"></div><div style="grid-column:1/-1"><label for="jNote">Reason / notes</label><input id="jNote" type="text" maxlength="250" placeholder="Why did you enter or exit?" style="width:100%"></div></div><div class="row" style="margin-top:12px"><button id="addJournal">Save journal record</button><button class="secondary" id="exportJournal">Export CSV</button><button class="danger" id="clearJournal">Clear journal</button></div><p class="notice">This journal does not sync with Bitget and cannot verify whether a trade actually occurred. Do not store API keys or passwords here.</p></div>
+<div class="card"><h3>Saved trades</h3><div class="tablewrap"><table><thead><tr><th>Date</th><th>Side</th><th>Entry</th><th>Exit</th><th>Size</th><th>Net P/L</th><th>Notes</th><th></th></tr></thead><tbody id="journalRows"><tr><td colspan="8">No journal records saved.</td></tr></tbody></table></div></div>
+</section>
+
+<section id="settings" class="page">
+<h1>Settings & Help</h1>
+<div class="card"><h3>Data connection</h3><p id="connectionInfo" class="statusline">Public market data connection has not been checked yet.</p><button id="testConnection">Test Bitget public data</button><p class="notice">No API key is required for public market data. The browser may block API requests due to network, host, or CORS restrictions. If requests fail, use a trusted backend proxy rather than placing secret keys in this HTML.</p></div>
+<div class="card"><h3>What this analyzer can and cannot do</h3><ul class="list"><li><b>Can:</b> read public candles/ticker data when the API is reachable, calculate common indicators, identify selected candle patterns, produce transparent rule-based signals, and run a limited historical simulation.</li><li><b>Cannot:</b> guarantee a 90% win rate, predict every market move, see your private Bitget account, or place/close orders.</li><li><b>AI note:</b> the analysis here is deterministic technical logic, not a trained AI model or an expert human trader. A true AI explanation service requires a backend and a model API; never put a secret model key in front-end JavaScript.</li><li><b>Timezone:</b> chart candle times are displayed in your browser's local timezone. Verify Bitget's candle timestamp conventions when comparing with trade history.</li><li><b>Privacy:</b> journal records stay in this browser's localStorage unless you export them.</li></ul></div>
+<div class="card"><h3>Optional live execution later</h3><p class="notice">Do not add real order execution until the signal engine has been tested. If you later build it, use a secure backend, least-privilege API keys, withdrawals disabled, explicit user confirmation, server-side risk limits, duplicate-order protection, and an emergency stop. Start with Bitget demo trading.</p></div>
+</section>
+<div class="footer">RazTech · Educational analysis only · No guaranteed returns · Not financial advice</div>
+</main>
+<script>
+'use strict';
+const API='https://api.bitget.com';
+const PRODUCT='USDT-FUTURES';
+const SYMBOL='BTCUSDT';
+const $=id=>document.getElementById(id);
+let chart=null,candleSeries=null,sma20Series=null,sma50Series=null;
+let candles=[],sma20=[],sma50=[],lastTicker=null,busy=false,lastBacktest=[];
+const fmt=(n,d=2)=>Number.isFinite(Number(n))?Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const money=n=>(Number(n)>=0?'+':'')+fmt(n,4)+' USDT';
+const price=n=>fmt(n,2)+' USDT';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function setStatus(id,msg){$(id).textContent=msg}
+function sma(data,period){let out=[],sum=0;for(let i=0;i<data.length;i++){sum+=data[i].close;if(i>=period)sum-=data[i-period].close;if(i>=period-1)out.push({time:data[i].time,value:sum/period});}return out}
+function ema(values,period){const out=[];const k=2/(period+1);let prev=null;values.forEach((v,i)=>{prev=prev===null?v:v*k+prev*(1-k);out.push(prev)});return out}
+function rsi(data,period=14){if(data.length<period+1)return null;let gains=0,losses=0;for(let i=data.length-period;i<data.length;i++){const d=data[i].close-data[i-1].close;if(d>0)gains+=d;else losses-=d;}if(losses===0)return gains===0?50:100;const rs=(gains/period)/(losses/period);return 100-100/(1+rs)}
+function atr(data,period=14){if(data.length<period+1)return null;const trs=[];for(let i=1;i<data.length;i++){const c=data[i],p=data[i-1];trs.push(Math.max(c.high-c.low,Math.abs(c.high-p.close),Math.abs(c.low-p.close)));}return trs.slice(-period).reduce((a,b)=>a+b,0)/period}
+function candlePattern(data){if(data.length<3)return ['Not enough candles to scan patterns.'];const c=data.at(-1),p=data.at(-2);const body=Math.abs(c.close-c.open),range=Math.max(c.high-c.low,1e-12),upper=c.high-Math.max(c.open,c.close),lower=Math.min(c.open,c.close)-c.low;const prevBody=Math.abs(p.close-p.open);const out=[];
+if(body/range<0.1)out.push('Doji-like candle: open and close are close together; market indecision may be present.');
+if(lower>body*2&&upper<body*1.2&&c.close>c.open)out.push('Hammer-like candle: long lower wick after price moved down; confirmation is required.');
+if(upper>body*2&&lower<body*1.2&&c.close<c.open)out.push('Shooting-star-like candle: long upper wick; confirmation is required.');
+if(c.close>c.open&&p.close<p.open&&c.open<=p.close&&c.close>=p.open&&body>=prevBody)out.push('Bullish engulfing-like pattern.');
+if(c.close<c.open&&p.close>p.open&&c.open>=p.close&&c.close<=p.open&&body>=prevBody)out.push('Bearish engulfing-like pattern.');
+if(!out.length)out.push('No selected common pattern detected on the latest completed candle.');
+out.push('Patterns are descriptive, not guaranteed reversal signals.');return out}
+function createChart(){const box=$('chart');if(!window.LightweightCharts)throw new Error('Chart library did not load. Check your internet connection.');chart=LightweightCharts.createChart(box,{width:box.clientWidth,height:box.clientHeight,layout:{background:{color:'#1b2436'},textColor:'#edf2ff'},grid:{vertLines:{color:'#293449'},horzLines:{color:'#293449'}},rightPriceScale:{borderColor:'#39445a'},timeScale:{timeVisible:true,secondsVisible:false,borderColor:'#39445a'}});candleSeries=chart.addCandlestickSeries({upColor:'#26a69a',downColor:'#ef5350',borderUpColor:'#26a69a',borderDownColor:'#ef5350',wickUpColor:'#26a69a',wickDownColor:'#ef5350'});sma20Series=chart.addLineSeries({color:'#facc15',lineWidth:2,title:'SMA 20',priceLineVisible:false});sma50Series=chart.addLineSeries({color:'#c084fc',lineWidth:2,title:'SMA 50',priceLineVisible:false})}
+async function getJSON(path){const r=await fetch(API+path,{cache:'no-store'});if(!r.ok)throw new Error('Bitget HTTP '+r.status);const j=await r.json();if(j.code&&j.code!=='00000')throw new Error(j.msg||'Bitget API error');return j}
+function granularity(tf){return tf==='1H'?'1H':tf==='4H'?'4H':tf}
+async function fetchCandles(tf,limit=200){const g=granularity(tf);const path='/api/v2/mix/market/candles?symbol='+SYMBOL+'&productType='+PRODUCT+'&granularity='+encodeURIComponent(g)+'&limit='+limit;const j=await getJSON(path);if(!Array.isArray(j.data)||!j.data.length)throw new Error('No Futures candles returned for '+tf);const now=Date.now();let arr=j.data.map(r=>{let t=Number(r[0]);if(t>1e12)t=Math.floor(t/1000);return {time:Math.floor(t),open:Number(r[1]),high:Number(r[2]),low:Number(r[3]),close:Number(r[4]),baseVolume:Number(r[5]||0)}}).filter(c=>Number.isFinite(c.time)&&[c.open,c.high,c.low,c.close].every(v=>Number.isFinite(v)&&v>0)&&c.high>=c.low).sort((a,b)=>a.time-b.time);const seconds=g==='1m'?60:g==='5m'?300:g==='15m'?900:g==='1H'?3600:14400;arr=arr.filter((c,i)=>i===0||c.time!==arr[i-1].time).filter(c=>c.time*1000+seconds*1000<=now);return arr}
+async function loadTicker(){const j=await getJSON('/api/v2/mix/market/ticker?productType='+PRODUCT+'&symbol='+SYMBOL);const t=Array.isArray(j.data)?j.data[0]:j.data;if(!t)throw new Error('Ticker data missing');lastTicker=t;const p=Number(t.lastPr??t.last??t.close);if(!Number.isFinite(p))throw new Error('Invalid ticker price');$('price').textContent='$'+fmt(p);const change=Number(t.change24h??t.changeUtc24h);$('change24').textContent=Number.isFinite(change)?(change*100).toFixed(2)+'%':'—';$('change24').className=Number.isFinite(change)&&change<0?'red': 'green';$('high24').textContent=price(Number(t.high24h));$('low24').textContent=price(Number(t.low24h));$('vol24').textContent=t.baseVolume??t.quoteVolume??'—';setStatus('marketStatus','Bitget USDT-Futures public ticker updated '+new Date().toLocaleTimeString()+'. No account is connected.')}
+function updateIndicators(){sma20=sma(candles,20);sma50=sma(candles,50);if(!candles.length)return;if(!chart)createChart();candleSeries.setData(candles.map(c=>({time:c.time,open:c.open,high:c.high,low:c.low,close:c.close})));sma20Series.setData(sma20);sma50Series.setData(sma50);chart.timeScale().fitContent();const a=sma20.at(-1)?.value,b=sma50.at(-1)?.value,rr=rsi(candles),aa=atr(candles),last=candles.at(-1);$('sma20').textContent=price(a);$('sma50').textContent=price(b);$('rsi').textContent=rr===null?'—':fmt(rr,1);$('atr').textContent=aa===null?'—':price(aa);$('candleInfo').textContent='Loaded '+candles.length+' completed '+$('timeframe').value+' candles. Last completed close '+price(last.close)+' at '+new Date(last.time*1000).toLocaleString()+'.';const trend=a>b?'BULLISH BIAS':a<b?'BEARISH BIAS':'NEUTRAL';$('trendState').textContent=trend;$('trendState').className=a>b?'green':a<b?'red':'';$('trendExplain').textContent='SMA 20 '+(a>b?'is above':a<b?'is below':'equals')+' SMA 50. This describes recent averages and does not predict the next candle.';const patterns=candlePattern(candles);$('patternInfo').textContent=patterns.join(' ');$('patternList').innerHTML=patterns.map(x=>'<p>• '+esc(x)+'</p>').join('');updateSignal();updateAnalysis();updateAIMarketSnapshot()}
+function updateSignal(){if(candles.length<52){$('signalState').textContent='INSUFFICIENT DATA';$('signalExplain').textContent='Load at least 52 completed candles.';return}const f=sma20.at(-1).value,s=sma50.at(-1).value,pf=sma20.at(-2).value,ps=sma50.at(-2).value,rr=rsi(candles),aa=atr(candles);let state='NO TRADE',why=[];if(pf<=ps&&f>s){state='BULLISH CROSSOVER';why.push('SMA 20 crossed above SMA 50 on the latest completed candle.')}else if(pf>=ps&&f<s){state='BEARISH CROSSOVER';why.push('SMA 20 crossed below SMA 50 on the latest completed candle.')}else if(f>s){why.push('Shorter average is above the longer average.');}else{why.push('Shorter average is below the longer average.');}if(rr!==null){if(rr>70)why.push('RSI is over 70 (potentially overbought).');else if(rr<30)why.push('RSI is under 30 (potentially oversold).');else why.push('RSI is between 30 and 70.');}if(aa!==null)why.push('ATR measures recent volatility; it is not a direction signal.');$('signalState').textContent=state;$('signalState').className=state.includes('BULLISH')?'green':state.includes('BEARISH')?'red':'';$('signalExplain').textContent=why.join(' ')+' This rule-based result is not a guaranteed entry and does not place orders.'}
+function updateAnalysis(){const rr=rsi(candles),aa=atr(candles),a=sma20.at(-1)?.value,b=sma50.at(-1)?.value;let rules=[['Trend filter',a>b?'Bullish average alignment':a<b?'Bearish average alignment':'Neutral averages',a!==undefined&&b!==undefined&&a!==b],['RSI momentum',rr===null?'Unavailable':rr<30?'RSI oversold zone':rr>70?'RSI overbought zone':'RSI mid-range',rr!==null&&rr>=30&&rr<=70],['Volume data','Volume included in candle records when provided',candles.at(-1)?.baseVolume>0],['Volatility','ATR '+(aa===null?'unavailable':price(aa)),aa!==null]];$('analysisChecklist').innerHTML=rules.map(([name,desc,ok])=>'<p><b class="'+(ok?'green':'yellow')+'">'+(ok?'✓':'•')+' '+esc(name)+'</b> — '+esc(desc)+'</p>').join('');const score=rules.filter(x=>x[2]).length;$('confluenceBar').style.width=(score/rules.length*100)+'%';$('indicatorInterpretation').innerHTML='<p><b>SMA:</b> '+esc(a>b?'20-period average is above 50-period average.':a<b?'20-period average is below 50-period average.':'Averages are aligned or unavailable.')+'</p><p><b>RSI (14):</b> '+esc(rr===null?'Not enough data.':rr>70?'Overbought zone; momentum may be stretched.':rr<30?'Oversold zone; momentum may be stretched.':'Mid-range momentum.')+'</p><p><b>ATR (14):</b> '+esc(aa===null?'Not enough data.':'Recent average true range is '+price(aa)+'. Consider volatility when planning risk.')+'</p><p><b>Pattern scan:</b> '+esc(candlePattern(candles)[0])+'</p>'}
+async function refreshAll(){if(busy)return;busy=true;$('refreshBtn').disabled=true;$('refreshBtn').textContent='Refreshing…';try{const tf=$('timeframe').value;const results=await Promise.allSettled([loadTicker(),fetchCandles(tf,200)]);if(results[1].status==='fulfilled'){candles=results[1].value;if(candles.length<52)throw new Error('Only '+candles.length+' completed candles returned; need at least 52.');updateIndicators()}else throw results[1].reason;if(results[0].status==='rejected')setStatus('marketStatus','Ticker warning: '+results[0].reason.message+' Chart data loaded if shown below.');}catch(e){setStatus('marketStatus','Data error: '+e.message+'. Check internet access, Bitget API availability, and browser CORS restrictions.');$('signalState').textContent='DATA UNAVAILABLE';$('signalExplain').textContent='Do not trade from stale or missing data.';}finally{busy=false;$('refreshBtn').disabled=false;$('refreshBtn').textContent='Refresh data';}}
+async function multiTimeframe(){const btn=$('multiBtn');btn.disabled=true;btn.textContent='Analyzing…';$('multiResults').textContent='Fetching timeframe candles…';try{const tfs=['1m','5m','15m','1H'];const results=await Promise.all(tfs.map(async tf=>{const data=await fetchCandles(tf,100);if(data.length<52)return {tf,text:'Not enough completed candles'};const f=sma(data,20).at(-1).value,s=sma(data,50).at(-1).value;return {tf,text:f>s?'Bullish average alignment':f<s?'Bearish average alignment':'Neutral',cls:f>s?'green':f<s?'red':''}}));$('multiResults').innerHTML=results.map(r=>'<p><b>'+esc(r.tf)+'</b>: <span class="'+(r.cls||'')+'">'+esc(r.text)+'</span></p>').join('');}catch(e){$('multiResults').textContent='Could not complete timeframe scan: '+e.message+'. Your browser/host may block this request.'}finally{btn.disabled=false;btn.textContent='Analyze 1m / 5m / 15m / 1H'}}
+function calcRisk(){const equity=Number($('account').value),riskPct=Number($('riskPct').value),entry=Number($('entry').value)||Number(lastTicker?.lastPr??lastTicker?.last),stop=Number($('stop').value),target=Number($('target').value),lev=Number($('leverage').value),feePct=Number($('feePct').value),side=$('side').value;const box=$('riskResult');if(!(equity>0&&riskPct>0&&riskPct<=100&&entry>0&&stop>0&&target>0&&feePct>=0)){box.textContent='Please enter valid equity, risk percentage, entry, stop-loss, and take-profit prices.';return}const riskDistance=Math.abs(entry-stop),rewardDistance=Math.abs(target-entry),valid=side==='long'?(stop<entry&&target>entry):(stop>entry&&target<entry);if(!valid){box.textContent='The stop-loss and take-profit do not match the selected trade direction.';return}const maxLoss=equity*riskPct/100,notional=maxLoss/(riskDistance/entry+2*feePct/100),margin=notional/lev,rawReward=notional*rewardDistance/entry,fees=notional*2*feePct/100,rr=rewardDistance/riskDistance;box.innerHTML='<p><b>Estimated position notional:</b> '+price(notional)+'</p><p><b>Estimated margin at '+lev+'×:</b> '+price(margin)+'</p><p><b>Estimated price-loss at stop:</b> '+price(notional*riskDistance/entry)+'</p><p><b>Estimated round-trip fees:</b> '+price(fees)+'</p><p><b>Estimated total loss at stop incl. fees:</b> '+price(notional*riskDistance/entry+fees)+'</p><p><b>Estimated gross reward at target:</b> '+price(rawReward)+'</p><p><b>Risk/reward:</b> 1 : '+fmt(rr,2)+'</p><p class="notice">This is a simplified sizing estimate. It excludes funding, slippage, maintenance margin, minimum order sizes, and exchange-specific liquidation calculations. Do not use it as an order guarantee.</p>'}
+function runBacktest(){if(candles.length<55){$('btStatus').textContent='Need at least 55 candles before testing.';return}const initial=Number($('startingBalance').value),fee=Number($('feeBacktest').value)/100,mode=$('tradeMode').value;if(!(initial>0&&fee>=0)){$('btStatus').textContent='Enter a positive starting balance and non-negative fee.';return}let equity=initial,peak=initial,maxDD=0,pos=null,trades=[],equityCurve=[initial];const map20=new Map(sma(candles,20).map(x=>[x.time,x.value])),map50=new Map(sma(candles,50).map(x=>[x.time,x.value]));for(let i=50;i<candles.length-1;i++){const cur=candles[i],next=candles[i+1],f=map20.get(cur.time),s=map50.get(cur.time),pf=map20.get(candles[i-1].time),ps=map50.get(candles[i-1].time);if([f,s,pf,ps].some(v=>v===undefined))continue;const bull=pf<=ps&&f>s,bear=pf>=ps&&f<s;let want=null;if(bull)want='LONG';else if(bear&&mode==='both')want='SHORT';else if(bear)want='CLOSE';if(!pos&&want==='LONG')pos={side:'LONG',entry:next.open,time:next.time,notional:equity};else if(!pos&&want==='SHORT'&&mode==='both')pos={side:'SHORT',entry:next.open,time:next.time,notional:equity};else if(pos&&(want==='CLOSE'||(want==='SHORT'&&pos.side==='LONG')||(want==='LONG'&&pos.side==='SHORT'))){const exit=next.open,move=pos.side==='LONG'?exit/pos.entry-1:pos.entry/exit-1,gross=pos.notional*move,fees=pos.notional*fee+(pos.notional*(exit/pos.entry))*fee,net=gross-fees;equity+=net;trades.push({...pos,exit,timeExit:next.time,gross,fees,net,equity});pos=null;if(want==='SHORT'&&mode==='both')pos={side:'SHORT',entry:exit,time:next.time,notional:equity};else if(want==='LONG'&&mode==='both')pos={side:'LONG',entry:exit,time:next.time,notional:equity};}peak=Math.max(peak,equity);maxDD=Math.max(maxDD,(peak-equity)/peak);equityCurve.push(equity)}const last=candles.at(-1);let floating=0;if(pos){floating=pos.notional*(pos.side==='LONG'?last.close/pos.entry-1:pos.entry/last.close-1);floating-=pos.notional*fee+(pos.notional*(last.close/pos.entry))*fee;}const ending=equity+floating,net=ending-initial,wins=trades.filter(t=>t.net>0),losses=trades.filter(t=>t.net<0),grossWin=wins.reduce((a,t)=>a+t.net,0),grossLoss=Math.abs(losses.reduce((a,t)=>a+t.net,0));$('btTrades').textContent=trades.length;$('btWinRate').textContent=trades.length?(wins.length/trades.length*100).toFixed(1)+'%':'N/A';$('btProfitFactor').textContent=grossLoss?fmt(grossWin/grossLoss,2):(grossWin?'∞':'N/A');$('btNet').textContent=money(net);$('btNet').className=net>=0?'green':'red';$('btEnd').textContent=price(ending);$('btDD').textContent=(maxDD*100).toFixed(2)+'%';$('btAvgWin').textContent=wins.length?price(grossWin/wins.length):'N/A';$('btAvgLoss').textContent=losses.length?price(losses.reduce((a,t)=>a+t.net,0)/losses.length):'N/A';$('btDataCount').textContent='Candles: '+candles.length;$('btRows').innerHTML=trades.slice(-20).reverse().map(t=>'<tr><td>'+esc(new Date(t.time*1000).toLocaleString())+'</td><td>'+esc(new Date(t.timeExit*1000).toLocaleString())+'</td><td>'+t.side+'</td><td>'+fmt(t.entry)+'</td><td>'+fmt(t.exit)+'</td><td class="'+(t.net>=0?'green':'red')+'">'+money(t.net)+'</td><td>'+(t.net>=0?'Win':'Loss')+'</td></tr>').join('')||'<tr><td colspan="7">No completed trades for this sample.</td></tr>';$('btStatus').textContent='Tested '+candles.length+' completed '+$('timeframe').value+' Futures candles. '+(pos?'One position remains open; estimated unrealized P/L is included in ending equity. ':'No open position. ')+'Fees estimated at '+fmt(fee*100,3)+'% per side. Funding, slippage, liquidation and spread are not modeled. This is not proof of future win rate.';lastBacktest=trades}
+function getJournal(){try{return JSON.parse(localStorage.getItem('raztech_journal_v1')||'[]')}catch{return []}}
+function saveJournal(rows){localStorage.setItem('raztech_journal_v1',JSON.stringify(rows));renderJournal()}
+function journalPnL(t){const entry=Number(t.entry),exit=Number(t.exit),size=Number(t.size),fees=Number(t.fees);if(!(entry>0&&exit>0&&size>0))return 0;const pct=t.side==='LONG'?exit/entry-1:entry/exit-1;return size*pct-fees}
+function renderJournal(){const rows=getJournal();$('journalRows').innerHTML=rows.length?rows.map((t,i)=>'<tr><td>'+esc(t.date||'')+'</td><td>'+esc(t.side)+'</td><td>'+fmt(Number(t.entry))+'</td><td>'+fmt(Number(t.exit))+'</td><td>'+price(Number(t.size))+'</td><td class="'+(journalPnL(t)>=0?'green':'red')+'">'+money(journalPnL(t))+'</td><td>'+esc(t.note||'')+'</td><td><button class="danger smallbtn" data-delete="'+i+'">Delete</button></td></tr>').join(''):'<tr><td colspan="8">No journal records saved.</td></tr>'}
+function addJournal(){const date=$('jTime').value||new Date().toISOString().slice(0,16),side=$('jSide').value,entry=Number($('jEntry').value),exit=Number($('jExit').value),size=Number($('jSize').value),fees=Number($('jFees').value),note=$('jNote').value.trim();if(!(entry>0&&exit>0&&size>0&&fees>=0)){alert('Please enter valid entry, exit, position size, and fee values.');return}const rows=getJournal();rows.unshift({date,side,entry,exit,size,fees,note});saveJournal(rows);$('jNote').value=''}
+function exportCSV(){const rows=getJournal();if(!rows.length){alert('No journal entries to export.');return}const fields=['date','side','entry','exit','size','fees','netPnL','note'];const lines=[fields.join(','),...rows.map(t=>fields.map(k=>{let v=k==='netPnL'?journalPnL(t):t[k]??'';return '"'+String(v).replace(/"/g,'""')+'"'}).join(','))];const blob=new Blob([lines.join('\r\n')],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='raztech-trade-journal.csv';a.click();URL.revokeObjectURL(url)}
+
+const AI_CHAT_ENDPOINT='/api/ai/chat';
+let aiChatHistory=[];
+function addAIMessage(role,text){
+  const wrap=document.createElement('div');
+  wrap.className='chat-msg '+(role==='user'?'user':'assistant');
+  const label=document.createElement('span');
+  label.className='chat-label';
+  label.textContent=role==='user'?'You':'RazTech AI';
+  const body=document.createElement('span');
+  body.textContent=text;
+  wrap.append(label,body);
+  $('aiMessages').appendChild(wrap);
+  $('aiMessages').scrollTop=$('aiMessages').scrollHeight;
+  return wrap;
+}
+function aiMarketSnapshot(){
+  return {
+    symbol:SYMBOL,
+    productType:PRODUCT,
+    timeframe:$('timeframe')?.value||'5m',
+    displayedPrice:$('price')?.textContent||'Unavailable',
+    change24h:$('change24')?.textContent||'Unavailable',
+    trend:$('trendState')?.textContent||'Unavailable',
+    ruleBasedSignal:$('signalState')?.textContent||'Unavailable',
+    signalExplanation:$('signalExplain')?.textContent||'Unavailable',
+    sma20:$('sma20')?.textContent||'Unavailable',
+    sma50:$('sma50')?.textContent||'Unavailable',
+    rsi14:$('rsi')?.textContent||'Unavailable',
+    atr14:$('atr')?.textContent||'Unavailable',
+    recentPattern:$('patternInfo')?.textContent||'Unavailable',
+    candleCount:candles.length,
+    latestCompletedClose:candles.length?price(candles[candles.length-1].close):'Unavailable'
+  };
+}
+function updateAIMarketSnapshot(){
+  if($('aiMarketPrice'))$('aiMarketPrice').textContent=$('price')?.textContent||'—';
+  if($('aiMarketTimeframe'))$('aiMarketTimeframe').textContent=$('timeframe')?.value||'5m';
+  if($('aiMarketSignal'))$('aiMarketSignal').textContent=$('signalState')?.textContent||'—';
+}
+async function sendAIQuestion(question){
+  const q=String(question||'').trim();
+  if(!q)return;
+  if(q.length>2000){addAIMessage('assistant','Please keep each question under 2,000 characters.');return;}
+  addAIMessage('user',q);
+  $('aiQuestion').value='';
+  $('aiSend').disabled=true;
+  $('aiSend').textContent='Thinking…';
+  $('aiConnectionStatus').textContent='Contacting secure AI backend…';
+  const pending=addAIMessage('assistant','Thinking…');
+  try{
+    const response=await fetch(AI_CHAT_ENDPOINT,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:q,marketContext:aiMarketSnapshot(),history:aiChatHistory.slice(-8)})
+    });
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||('Backend returned HTTP '+response.status));
+    const answer=String(data.answer||'').trim();
+    if(!answer)throw new Error('The AI backend returned an empty answer.');
+    pending.lastChild.textContent=answer;
+    aiChatHistory.push({role:'user',content:q},{role:'assistant',content:answer});
+    aiChatHistory=aiChatHistory.slice(-10);
+    $('aiConnectionStatus').textContent='Connected · response received';
+    $('aiSetupHelp').textContent='AI backend responded successfully. Keep your model API key only on the server, never in this HTML file.';
+  }catch(err){
+    pending.lastChild.textContent='I could not connect to the AI service. '+err.message+' If you opened this as a file on your phone, deploy the backend and website online first. Do not paste an API key into this page.';
+    $('aiConnectionStatus').textContent='Connection unavailable';
+  }finally{
+    $('aiSend').disabled=false;
+    $('aiSend').textContent='Send';
+    $('aiMessages').scrollTop=$('aiMessages').scrollHeight;
+  }
+}
+async function testAIConnection(){
+  $('aiConnectionStatus').textContent='Checking backend…';
+  try{
+    const r=await fetch('/api/ai/health',{cache:'no-store'});
+    const j=await r.json();
+    if(!r.ok||!j.ok)throw new Error(j.error||'AI backend is not ready.');
+    $('aiConnectionStatus').textContent=j.configured?'Backend ready':'Backend online; model API key not configured';
+    $('aiSetupHelp').textContent=j.configured?'Backend is online and the model API key is configured. Send a question to test it.':'Backend is online, but the server owner must set OPENAI_API_KEY in the hosting environment.';
+  }catch(e){
+    $('aiConnectionStatus').textContent='Backend not reachable';
+    $('aiSetupHelp').textContent='No secure AI backend responded at this website address. The HTML file on your phone cannot securely call a paid AI API on its own. Deploy the included backend online and set the API key as a server environment variable.';
+  }
+}
+
+function switchPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));if(id==='history')renderJournal();if(id==='assistant')updateAIMarketSnapshot();if(id==='backtest')$('btDataCount').textContent='Candles: '+(candles.length||'—');window.scrollTo({top:0,behavior:'smooth'});}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.page)));
+$('refreshBtn').addEventListener('click',refreshAll);$('timeframe').addEventListener('change',refreshAll);$('multiBtn').addEventListener('click',multiTimeframe);$('calcRisk').addEventListener('click',calcRisk);$('useCurrent').addEventListener('click',()=>{$('entry').value=Number(lastTicker?.lastPr??lastTicker?.last??0)||'';if(!$('entry').value)alert('Current ticker price is not available yet.')});$('runBacktest').addEventListener('click',runBacktest);$('testConnection').addEventListener('click',async()=>{setStatus('connectionInfo','Testing public Futures ticker…');try{await loadTicker();setStatus('connectionInfo','Connection successful. Latest BTCUSDT Futures ticker fetched at '+new Date().toLocaleString()+'.')}catch(e){setStatus('connectionInfo','Connection failed: '+e.message+'. The host/browser may block the request, or the endpoint may be unavailable.')}});$('addJournal').addEventListener('click',addJournal);$('exportJournal').addEventListener('click',exportCSV);$('clearJournal').addEventListener('click',()=>{if(confirm('Delete all saved RazTech journal records from this browser?')){localStorage.removeItem('raztech_journal_v1');renderJournal()}});$('journalRows').addEventListener('click',e=>{const b=e.target.closest('[data-delete]');if(!b)return;const rows=getJournal();rows.splice(Number(b.dataset.delete),1);saveJournal(rows)});
+$('jTime').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
+window.addEventListener('resize',()=>{if(chart)chart.applyOptions({width:$('chart').clientWidth,height:$('chart').clientHeight})});
+
+$('aiChatForm').addEventListener('submit',e=>{e.preventDefault();sendAIQuestion($('aiQuestion').value);});
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{ $('aiQuestion').value=b.dataset.prompt; $('aiQuestion').focus(); }));
+$('aiClear').addEventListener('click',()=>{aiChatHistory=[];$('aiMessages').replaceChildren();addAIMessage('assistant','Chat cleared. What would you like to know about the market or trading risk?');});
+$('aiTestConnection').addEventListener('click',testAIConnection);
+
+refreshAll();
+setInterval(()=>{if(!document.hidden)refreshAll()},60000);
+</script>
+</body>
+  </html>
