@@ -53,6 +53,7 @@
     select { max-width: 100%; }
 
     #chart { width: 100%; height: 370px; }
+
     #status, #candle, #signal, #backtestStatus {
       overflow-wrap: anywhere;
       line-height: 1.5;
@@ -110,6 +111,56 @@
       color: #aab5cc;
     }
 
+    .raztech-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 20px 12px;
+      margin: 0 auto 18px;
+      color: #f5f7ff;
+      font-family: Arial, sans-serif;
+    }
+
+    .raztech-emblem {
+      width: 82px;
+      height: 82px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 10px #00d9ff55);
+    }
+
+    .raztech-name {
+      margin: 0;
+      font-size: clamp(25px, 6vw, 36px);
+      font-weight: 900;
+      letter-spacing: 1px;
+      background: linear-gradient(
+        100deg, #00e5ff, #8b5cf6, #ff4fd8
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .raztech-tagline {
+      margin: 5px 0 0;
+      color: #9ba9c9;
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+    }
+
+    .backtest-link {
+      display: inline-block;
+      padding: 10px 16px;
+      margin: 10px 0;
+      border-radius: 10px;
+      text-decoration: none;
+      color: #dce5ff;
+      background: #11192b;
+      border: 1px solid #263552;
+    }
+
     @media (max-width: 450px) {
       body { padding: 10px; }
       .card { padding: 12px; }
@@ -121,48 +172,6 @@
 </head>
 
 <body>
-  
-  
-<style>
-  .raztech-brand {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    padding: 20px 12px;
-    margin: 0 auto 18px;
-    color: #f5f7ff;
-    font-family: Arial, sans-serif;
-  }
-
-  .raztech-emblem {
-    width: 82px;
-    height: 82px;
-    flex-shrink: 0;
-    filter: drop-shadow(0 0 10px #00d9ff55);
-  }
-
-  .raztech-name {
-    margin: 0;
-    font-size: clamp(25px, 6vw, 36px);
-    font-weight: 900;
-    letter-spacing: 1px;
-    background: linear-gradient(
-      100deg, #00e5ff, #8b5cf6, #ff4fd8
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-
-  .raztech-tagline {
-    margin: 5px 0 0;
-    color: #9ba9c9;
-    font-size: 10px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-  }
-</style>
 
 <header class="raztech-brand">
   <svg class="raztech-emblem"
@@ -170,18 +179,16 @@
        xmlns="http://www.w3.org/2000/svg"
        role="img"
        aria-labelledby="raztech-logo-title">
-    <title id="raztech-logo-title">
-      RazTech Trading Logo
-    </title>
+    <title id="raztech-logo-title">RazTech Trading Logo</title>
+
     <defs>
-      <linearGradient id="raztech-ring"
-                      x1="0" y1="0" x2="1" y2="1">
+      <linearGradient id="raztech-ring" x1="0" y1="0" x2="1" y2="1">
         <stop offset="0%" stop-color="#00e5ff"/>
         <stop offset="50%" stop-color="#8064ff"/>
         <stop offset="100%" stop-color="#ff4fd8"/>
       </linearGradient>
-      <linearGradient id="raztech-bars"
-                      x1="0" y1="1" x2="1" y2="0">
+
+      <linearGradient id="raztech-bars" x1="0" y1="1" x2="1" y2="0">
         <stop offset="0%" stop-color="#00e5ff"/>
         <stop offset="100%" stop-color="#a78bfa"/>
       </linearGradient>
@@ -191,12 +198,12 @@
             fill="#0b1020"
             stroke="url(#raztech-ring)"
             stroke-width="3"/>
+
     <circle cx="50" cy="50" r="39"
             fill="none"
             stroke="#283652"
             stroke-width="1"/>
 
-    <!-- Trading candlesticks -->
     <g stroke-linecap="round" stroke-width="2.5">
       <path d="M27 53 V67 M22 58 H32 V64 H22 Z"
             fill="#00e5ff" stroke="#00e5ff"/>
@@ -208,13 +215,13 @@
             fill="#ff4fd8" stroke="#ff4fd8"/>
     </g>
 
-    <!-- Upward market trend -->
     <path d="M20 47 L38 35 L51 39 L75 18"
           fill="none"
           stroke="#f5f7ff"
           stroke-width="2.5"
           stroke-linecap="round"
           stroke-linejoin="round"/>
+
     <path d="M64 18 H75 V29"
           fill="none"
           stroke="#f5f7ff"
@@ -233,6 +240,7 @@
     <p class="raztech-tagline">Trade the trend</p>
   </div>
 </header>
+
 <main>
   <h1>₿ BTC/USDT Analyzer</h1>
   <p class="muted">Bitget Spot · Educational market analysis</p>
@@ -248,29 +256,35 @@
 
   <section class="card">
     <h3>BTC/USDT · 5-Minute Chart</h3>
+
     <div class="legend">
       <span>🟢 Rising candle</span>
       <span>🔴 Falling candle</span>
       <span class="yellow">━ SMA 20</span>
       <span class="purple">━ SMA 50</span>
     </div>
+
     <div id="chart"></div>
     <p id="candle" class="muted">Waiting for candles...</p>
   </section>
 
   <section class="card">
     <h3>Stage 3 · Market Indicators</h3>
+
     <div class="grid">
       <div class="metric">
         <span>SMA 20</span>
         <strong id="sma20Value">—</strong>
       </div>
+
       <div class="metric">
         <span>SMA 50</span>
         <strong id="sma50Value">—</strong>
       </div>
     </div>
+
     <p id="trend">Waiting for indicator data...</p>
+
     <p class="notice">
       SMA means simple moving average. SMA 20 averages the latest
       20 candle closes; SMA 50 averages the latest 50.
@@ -279,13 +293,16 @@
 
   <section class="card">
     <h3>Stage 4 · Educational Signal</h3>
+
     <div class="metric">
       <span>Latest strategy status</span>
       <strong id="signal">Waiting for data...</strong>
     </div>
+
     <p id="signalDetails" class="muted">
       Signals will be calculated from moving-average crossovers.
     </p>
+
     <p class="notice">
       A crossover is a historical indicator, not a recommendation.
       This tool does not place trades.
@@ -294,17 +311,20 @@
 
   <section class="card">
     <h3>Historical Backtest</h3>
+
     <p class="muted">
       Test a simple strategy on the candles currently loaded.
     </p>
 
     <div class="controls">
       <label for="capital">Starting virtual balance:</label>
+
       <select id="capital">
         <option value="1000">1,000 USDT</option>
         <option value="5000" selected>5,000 USDT</option>
         <option value="10000">10,000 USDT</option>
       </select>
+
       <button id="backtestButton" onclick="runBacktest()">
         Run backtest
       </button>
@@ -315,14 +335,17 @@
         <span>Completed trades</span>
         <strong id="tradeCount">—</strong>
       </div>
+
       <div class="metric">
         <span>Winning trades</span>
         <strong id="winRate">—</strong>
       </div>
+
       <div class="metric">
         <span>Simulated net P/L</span>
         <strong id="netPL">—</strong>
       </div>
+
       <div class="metric">
         <span>Ending balance</span>
         <strong id="endBalance">—</strong>
@@ -345,6 +368,7 @@
 
   <section class="card">
     <h3>Safety and Limitations</h3>
+
     <p class="notice">
       This is an educational tool using public market data. It does
       not access your exchange account or place orders. Historical
@@ -353,6 +377,10 @@
       could be worse. It uses only the candles loaded into the app.
     </p>
   </section>
+
+  <a href="backtest.html" class="backtest-link">
+    Historical Backtest
+  </a>
 </main>
 
 <script>
@@ -366,6 +394,7 @@
   let candleSeries = null;
   let sma20Series = null;
   let sma50Series = null;
+
   let candleData = [];
   let sma20Data = [];
   let sma50Data = [];
@@ -406,15 +435,21 @@
     chart = LightweightCharts.createChart(box, {
       width: box.clientWidth,
       height: box.clientHeight,
+
       layout: {
         background: { color: '#1b2436' },
         textColor: '#edf2ff'
       },
+
       grid: {
         vertLines: { color: '#293449' },
         horzLines: { color: '#293449' }
       },
-      rightPriceScale: { borderColor: '#39445a' },
+
+      rightPriceScale: {
+        borderColor: '#39445a'
+      },
+
       timeScale: {
         timeVisible: true,
         secondsVisible: false,
@@ -451,19 +486,28 @@
 
     try {
       const response = await fetch(tickerUrl);
-      if (!response.ok) throw new Error('HTTP ' + response.status);
+
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
 
       const result = await response.json();
 
-      if (result.code !== '00000' ||
-          !Array.isArray(result.data) ||
-          !result.data.length) {
+      if (
+        result.code !== '00000' ||
+        !Array.isArray(result.data) ||
+        !result.data.length
+      ) {
         throw new Error(result.msg || 'No price data returned');
       }
 
       const item = result.data[0];
+
       const price = Number(
-        item.lastPr ?? item.lastPrice ?? item.last ?? item.close
+        item.lastPr ??
+        item.lastPrice ??
+        item.last ??
+        item.close
       );
 
       if (!Number.isFinite(price) || price <= 0) {
@@ -477,7 +521,9 @@
         });
 
       status.textContent =
-        'Public price updated at ' + new Date().toLocaleTimeString();
+        'Public price updated at ' +
+        new Date().toLocaleTimeString();
+
     } catch (error) {
       status.textContent = 'Price error: ' + error.message;
     }
@@ -485,6 +531,7 @@
 
   async function loadCandles() {
     const message = document.getElementById('candle');
+
     message.textContent = 'Loading historical candles...';
 
     try {
@@ -493,13 +540,18 @@
       }
 
       const response = await fetch(candlesUrl);
-      if (!response.ok) throw new Error('HTTP ' + response.status);
+
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
 
       const result = await response.json();
 
-      if (result.code !== '00000' ||
-          !Array.isArray(result.data) ||
-          !result.data.length) {
+      if (
+        result.code !== '00000' ||
+        !Array.isArray(result.data) ||
+        !result.data.length
+      ) {
         throw new Error(result.msg || 'No candle data returned');
       }
 
@@ -508,7 +560,9 @@
 
         return {
           time: Math.floor(
-            rawTime > 1000000000000 ? rawTime / 1000 : rawTime
+            rawTime > 1000000000000
+              ? rawTime / 1000
+              : rawTime
           ),
           open: Number(row[1]),
           high: Number(row[2]),
@@ -516,21 +570,27 @@
           close: Number(row[4])
         };
       }).filter(function(c) {
-        return Number.isFinite(c.time) &&
+        return (
+          Number.isFinite(c.time) &&
           Number.isFinite(c.open) &&
           Number.isFinite(c.high) &&
           Number.isFinite(c.low) &&
           Number.isFinite(c.close) &&
-          c.open > 0 && c.high > 0 &&
-          c.low > 0 && c.close > 0 &&
+          c.open > 0 &&
+          c.high > 0 &&
+          c.low > 0 &&
+          c.close > 0 &&
           c.high >= c.low &&
-          c.high >= c.open && c.high >= c.close &&
-          c.low <= c.open && c.low <= c.close;
+          c.high >= c.open &&
+          c.high >= c.close &&
+          c.low <= c.open &&
+          c.low <= c.close
+        );
       }).sort(function(a, b) {
         return a.time - b.time;
       });
 
-      // Remove duplicate timestamps if the API returns any.
+      // Remove duplicate candle timestamps.
       candleData = candles.filter(function(c, i, arr) {
         return i === 0 || c.time !== arr[i - 1].time;
       });
@@ -542,11 +602,14 @@
       sma20Data = calculateSMA(candleData, 20);
       sma50Data = calculateSMA(candleData, 50);
 
-      if (!chart) createChart();
+      if (!chart) {
+        createChart();
+      }
 
       candleSeries.setData(candleData);
       sma20Series.setData(sma20Data);
       sma50Series.setData(sma50Data);
+
       chart.timeScale().fitContent();
 
       const latest20 = sma20Data[sma20Data.length - 1].value;
@@ -555,6 +618,7 @@
 
       document.getElementById('sma20Value').textContent =
         formatPrice(latest20);
+
       document.getElementById('sma50Value').textContent =
         formatPrice(latest50);
 
@@ -564,17 +628,21 @@
         trend.textContent =
           'SMA 20 is above SMA 50: recent momentum is relatively stronger.';
         trend.className = 'green';
+
       } else if (latest20 < latest50) {
         trend.textContent =
           'SMA 20 is below SMA 50: recent momentum is relatively weaker.';
         trend.className = 'red';
+
       } else {
-        trend.textContent = 'Both averages are equal at the latest reading.';
+        trend.textContent =
+          'Both averages are equal at the latest reading.';
         trend.className = '';
       }
 
       trend.textContent +=
-        ' Latest candle close: ' + formatPrice(latestClose) + '.';
+        ' Latest candle close: ' +
+        formatPrice(latestClose) + '.';
 
       message.textContent =
         'Loaded ' + candleData.length +
@@ -583,15 +651,22 @@
 
       updateSignal();
       runBacktest();
+
     } catch (error) {
       message.textContent = 'Chart error: ' + error.message;
+
       document.getElementById('trend').textContent =
         'Indicator data is unavailable.';
-      document.getElementById('signal').textContent = 'Unavailable';
+
+      document.getElementById('signal').textContent =
+        'Unavailable';
+
       document.getElementById('signalDetails').textContent =
         'Check the chart status and try refreshing.';
+
       document.getElementById('backtestStatus').textContent =
         'Backtest unavailable until valid candle data loads.';
+
       console.error(error);
     }
   }
@@ -607,45 +682,55 @@
 
     const last20 = sma20Data[sma20Data.length - 1].value;
     const last50 = sma50Data[sma50Data.length - 1].value;
+
     const previous20 = sma20Data[sma20Data.length - 2].value;
     const previous50 = sma50Data[sma50Data.length - 2].value;
 
     if (previous20 <= previous50 && last20 > last50) {
       signalEl.textContent = 'Bullish crossover';
       signalEl.className = 'green';
+
       details.textContent =
-        'SMA 20 crossed above SMA 50 at the latest completed data point. This is a historical signal, not a forecast.';
+        'SMA 20 crossed above SMA 50 at the latest data point. This is a historical signal, not a forecast.';
+
     } else if (previous20 >= previous50 && last20 < last50) {
       signalEl.textContent = 'Bearish crossover';
       signalEl.className = 'red';
+
       details.textContent =
-        'SMA 20 crossed below SMA 50 at the latest completed data point. This is a historical signal, not a forecast.';
+        'SMA 20 crossed below SMA 50 at the latest data point. This is a historical signal, not a forecast.';
+
     } else if (last20 > last50) {
       signalEl.textContent = 'SMA 20 above SMA 50';
       signalEl.className = 'green';
+
       details.textContent =
         'The shorter average is above the longer average, but no new crossover is detected in the latest reading.';
+
     } else {
       signalEl.textContent = 'SMA 20 below SMA 50';
       signalEl.className = 'red';
+
       details.textContent =
         'The shorter average is below the longer average, but no new crossover is detected in the latest reading.';
     }
   }
 
   function runBacktest() {
-    if (candleData.length < 52 ||
-        sma20Data.length === 0 ||
-        sma50Data.length === 0) {
+    if (
+      candleData.length < 52 ||
+      sma20Data.length === 0 ||
+      sma50Data.length === 0
+    ) {
       document.getElementById('backtestStatus').textContent =
         'At least 52 valid candles are needed.';
       return;
     }
 
-    // Map moving averages by candle timestamp.
     const fastMap = new Map(
       sma20Data.map(item => [item.time, item.value])
     );
+
     const slowMap = new Map(
       sma50Data.map(item => [item.time, item.value])
     );
@@ -656,22 +741,27 @@
 
     let balance = initial;
     let position = null;
-    let completed = [];
+    const completed = [];
+
     let previousFast = null;
     let previousSlow = null;
 
-    // Signals at candle i execute at candle i+1 open.
+    // Signals execute at the next candle open.
     for (let i = 0; i < candleData.length - 1; i++) {
       const current = candleData[i];
       const next = candleData[i + 1];
+
       const fast = fastMap.get(current.time);
       const slow = slowMap.get(current.time);
 
-      if (fast === undefined || slow === undefined) continue;
+      if (fast === undefined || slow === undefined) {
+        continue;
+      }
 
       if (previousFast !== null && previousSlow !== null) {
         const crossedUp =
           previousFast <= previousSlow && fast > slow;
+
         const crossedDown =
           previousFast >= previousSlow && fast < slow;
 
@@ -681,9 +771,12 @@
             stake: balance,
             time: next.time
           };
+
         } else if (position && crossedDown) {
           const exit = next.open;
-          const pnl = position.stake * (exit / position.entry - 1);
+
+          const pnl =
+            position.stake * (exit / position.entry - 1);
 
           balance += pnl;
           completed.push(pnl);
@@ -695,17 +788,23 @@
       previousSlow = slow;
     }
 
-    const lastClose = candleData[candleData.length - 1].close;
+    const lastClose =
+      candleData[candleData.length - 1].close;
+
     let unrealized = 0;
 
     if (position) {
-      unrealized = position.stake *
-        (lastClose / position.entry - 1);
+      unrealized =
+        position.stake * (lastClose / position.entry - 1);
     }
 
     const totalPL = balance - initial + unrealized;
     const ending = balance + unrealized;
-    const wins = completed.filter(pnl => pnl > 0).length;
+
+    const wins = completed.filter(function(pnl) {
+      return pnl > 0;
+    }).length;
+
     const rate = completed.length
       ? (wins / completed.length) * 100
       : null;
@@ -717,9 +816,12 @@
       rate === null ? 'N/A' : rate.toFixed(1) + '%';
 
     const plElement = document.getElementById('netPL');
+
     plElement.textContent =
       (totalPL >= 0 ? '+' : '') + formatPrice(totalPL);
-    plElement.className = totalPL >= 0 ? 'green' : 'red';
+
+    plElement.className =
+      totalPL >= 0 ? 'green' : 'red';
 
     document.getElementById('endBalance').textContent =
       formatPrice(ending);
@@ -735,14 +837,20 @@
 
   async function refreshAll() {
     if (busy) return;
+
     busy = true;
 
     const button = document.getElementById('refreshButton');
+
     button.disabled = true;
     button.textContent = 'Loading...';
 
     try {
-      await Promise.all([loadMarket(), loadCandles()]);
+      await Promise.all([
+        loadMarket(),
+        loadCandles()
+      ]);
+
     } finally {
       busy = false;
       button.disabled = false;
@@ -753,24 +861,20 @@
   window.addEventListener('resize', function() {
     if (chart) {
       chart.applyOptions({
-        width: document.getElementById('chart').clientWidth
+        width: document.getElementById('chart').clientWidth,
+        height: document.getElementById('chart').clientHeight
       });
     }
   });
-<a href="backtest.html"
-   style="
-     display:inline-block;
-     padding:10px 16px;
-     margin:10px;
-     border-radius:10px;
-     text-decoration:none;
-     color:#dce5ff;
-     background:#11192b;
-     border:1px solid #263552;
-   ">
-   Historical Backtest
-</a>
-  document.getElementById('capital').addEventListener('change', runBacktest);
+
+  document.getElementById('capital').addEventListener(
+    'change',
+    runBacktest
+  );
+
+  // Start the analyzer.
   refreshAll();
+</script>
+
 </body>
 </html>
