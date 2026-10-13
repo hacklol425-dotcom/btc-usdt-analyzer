@@ -1,1032 +1,291 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>RazTech Historical Backtest</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #080c16;
-      color: #eef3ff;
-      font-family: Arial, sans-serif;
-    }
-
-    .container {
-      width: min(1100px, 94%);
-      margin: auto;
-      padding: 20px 0 40px;
-    }
-
-    .header {
-      text-align: center;
-      padding: 15px 0 20px;
-    }
-
-    .logo {
-      width: 82px;
-      height: 82px;
-      margin-bottom: 8px;
-      filter: drop-shadow(0 0 12px #00d9ff55);
-    }
-
-    .brand {
-      margin: 0;
-      font-size: clamp(30px, 8vw, 48px);
-      font-weight: 900;
-      background: linear-gradient(
-        100deg,
-        #00e5ff,
-        #8064ff,
-        #ff4fd8
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .subtitle {
-      color: #93a0bb;
-      margin-top: 6px;
-      letter-spacing: 2px;
-      font-size: 12px;
-    }
-
-    .nav {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 10px 0 25px;
-    }
-
-    .nav a {
-      text-decoration: none;
-      color: #dce5ff;
-      background: #11192b;
-      border: 1px solid #263552;
-      padding: 10px 16px;
-      border-radius: 10px;
-    }
-
-    .nav a:hover {
-      border-color: #00d9ff;
-    }
-
-    .panel {
-      background: #0e1525;
-      border: 1px solid #202d47;
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 18px;
-      box-shadow: 0 10px 35px #00000022;
-    }
-
-    .panel h2 {
-      margin-top: 0;
-      font-size: 19px;
-    }
-
-    .status {
-      padding: 12px;
-      border-radius: 10px;
-      background: #111a2d;
-      color: #b8c5df;
-      margin-bottom: 15px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-
-    .stat {
-      background: #111a2d;
-      border: 1px solid #24324d;
-      border-radius: 12px;
-      padding: 15px;
-    }
-
-    .stat-label {
-      color: #8d9bb7;
-      font-size: 12px;
-      margin-bottom: 7px;
-    }
-
-    .stat-value {
-      font-size: 22px;
-      font-weight: bold;
-    }
-
-    .positive {
-      color: #28e6a0;
-    }
-
-    .negative {
-      color: #ff667c;
-    }
-
-    .neutral {
-      color: #dce5ff;
-    }
-
-    .explanation {
-      line-height: 1.6;
-      color: #b8c5df;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 650px;
-    }
-
-    th,
-    td {
-      padding: 11px;
-      border-bottom: 1px solid #202d47;
-      text-align: left;
-      font-size: 13px;
-    }
-
-    th {
-      color: #9eacc8;
-      font-weight: 600;
-    }
-
-    .buy {
-      color: #28e6a0;
-      font-weight: bold;
-    }
-
-    .sell {
-      color: #ff667c;
-      font-weight: bold;
-    }
-
-    .warning {
-      background: #211b0d;
-      border: 1px solid #66511d;
-      color: #d8c789;
-      border-radius: 10px;
-      padding: 13px;
-      line-height: 1.5;
-    }
-
-    .footer {
-      text-align: center;
-      color: #65728d;
-      font-size: 12px;
-      margin-top: 25px;
-    }
-
-    @media (min-width: 700px) {
-      .stats {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RazTech Historical Backtest</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080c16;color:#eef3ff;font-family:Arial,sans-serif}
+.container{width:min(1100px,94%);margin:auto;padding:20px 0 40px}
+.header{text-align:center;padding:15px 0 20px}
+.logo{width:82px;height:82px;filter:drop-shadow(0 0 12px #00d9ff55)}
+.brand{margin:0;font-size:clamp(30px,8vw,48px);font-weight:900;background:linear-gradient(100deg,#00e5ff,#8064ff,#ff4fd8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.subtitle{color:#93a0bb;margin-top:6px;letter-spacing:2px;font-size:12px}
+.nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0 25px}
+button,.nav a{display:inline-block;text-decoration:none;color:#dce5ff;background:#11192b;border:1px solid #263552;padding:11px 16px;border-radius:10px;font-size:15px;cursor:pointer}
+button.primary{background:#5278ff;color:white;border:0}
+button:disabled{opacity:.6}
+.panel{background:#0e1525;border:1px solid #202d47;border-radius:16px;padding:18px;margin-bottom:18px;box-shadow:0 10px 35px #00000022}
+.panel h2{margin-top:0;font-size:19px}
+.status{padding:12px;border-radius:10px;background:#111a2d;color:#b8c5df;margin-bottom:15px;line-height:1.5;overflow-wrap:anywhere}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{background:#111a2d;border:1px solid #24324d;border-radius:12px;padding:15px;min-width:0}
+.stat-label{color:#8d9bb7;font-size:12px;margin-bottom:7px}
+.stat-value{font-size:20px;font-weight:bold;overflow-wrap:anywhere}
+.positive,.buy{color:#28e6a0}.negative,.sell{color:#ff667c}.neutral{color:#dce5ff}
+.explanation{line-height:1.6;color:#b8c5df;overflow-wrap:anywhere}
+.table-wrapper{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{padding:11px;border-bottom:1px solid #202d47;text-align:left;font-size:13px}
+th{color:#9eacc8;font-weight:600}
+.warning{background:#211b0d;border:1px solid #66511d;color:#d8c789;border-radius:10px;padding:13px;line-height:1.5}
+.footer{text-align:center;color:#65728d;font-size:12px;margin-top:25px}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
 </head>
-
 <body>
-
-  <div class="container">
-
-    <header class="header">
-
-      <!-- RazTech logo -->
-      <svg class="logo"
-           viewBox="0 0 100 100"
-           xmlns="http://www.w3.org/2000/svg"
-           role="img"
-           aria-label="RazTech trading logo">
-
-        <defs>
-          <linearGradient id="ring"
-                          x1="0"
-                          y1="0"
-                          x2="1"
-                          y2="1">
-            <stop offset="0%" stop-color="#00e5ff"/>
-            <stop offset="50%" stop-color="#8064ff"/>
-            <stop offset="100%" stop-color="#ff4fd8"/>
-          </linearGradient>
-        </defs>
-
-        <circle cx="50"
-                cy="50"
-                r="46"
-                fill="#0b1020"
-                stroke="url(#ring)"
-                stroke-width="3"/>
-
-        <circle cx="50"
-                cy="50"
-                r="39"
-                fill="none"
-                stroke="#283652"
-                stroke-width="1"/>
-
-        <!-- Candles -->
-        <path d="M27 53 V67 M22 58 H32 V64 H22 Z"
-              fill="#00e5ff"
-              stroke="#00e5ff"
-              stroke-width="2.5"/>
-
-        <path d="M42 37 V60 M37 43 H47 V53 H37 Z"
-              fill="#8064ff"
-              stroke="#8064ff"
-              stroke-width="2.5"/>
-
-        <path d="M57 30 V49 M52 34 H62 V43 H52 Z"
-              fill="#00e5ff"
-              stroke="#00e5ff"
-              stroke-width="2.5"/>
-
-        <path d="M72 22 V40 M67 27 H77 V34 H67 Z"
-              fill="#ff4fd8"
-              stroke="#ff4fd8"
-              stroke-width="2.5"/>
-
-        <!-- Trend -->
-        <path d="M20 47 L38 35 L51 39 L75 18"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-
-        <path d="M64 18 H75 V29"
-              fill="none"
-              stroke="#ffffff"
-              stroke-width="2.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"/>
-
-      </svg>
-
-      <h1 class="brand">RazTech</h1>
-      <div class="subtitle">HISTORICAL BACKTEST</div>
-
-    </header>
-
-
-    <nav class="nav">
-      <a href="index.html">← Live Dashboard</a>
-      <a href="backtest.html">Historical Backtest</a>
-    </nav>
-
-
-    <section class="panel">
-
-      <h2>Backtest Status</h2>
-
-      <div id="status" class="status">
-        Loading historical BTC/USDT data...
-      </div>
-
-      <div class="warning">
-        This is an educational simulation. Historical results do not
-        guarantee future performance. Fees, slippage and real-world
-        execution are not included in this basic model.
-      </div>
-
-    </section>
-
-
-    <section class="panel">
-
-      <h2>Backtest Results</h2>
-
-      <div class="stats">
-
-        <div class="stat">
-          <div class="stat-label">Completed Trades</div>
-          <div id="completedTrades" class="stat-value neutral">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Open Position</div>
-          <div id="openPosition" class="stat-value neutral">NONE</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Winning Trades</div>
-          <div id="winningTrades" class="stat-value positive">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Win Rate</div>
-          <div id="winRate" class="stat-value neutral">0%</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Net P/L</div>
-          <div id="netPL" class="stat-value neutral">$0.00</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Ending Balance</div>
-          <div id="endingBalance" class="stat-value neutral">$1,000.00</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Candles Tested</div>
-          <div id="candlesTested" class="stat-value neutral">0</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-label">Current BTC Price</div>
-          <div id="currentPrice" class="stat-value neutral">--</div>
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <section class="panel">
-
-      <h2>How the Strategy Works</h2>
-
-      <div class="explanation">
-
-        <p>
-          <strong>SMA 20</strong> is the average closing price of the
-          latest 20 candles.
-        </p>
-
-        <p>
-          <strong>SMA 50</strong> is the average closing price of the
-          latest 50 candles.
-        </p>
-
-        <p>
-          <strong>BUY:</strong> SMA 20 crosses from below SMA 50
-          to above SMA 50.
-        </p>
-
-        <p>
-          <strong>SELL:</strong> SMA 20 crosses from above SMA 50
-          to below SMA 50.
-        </p>
-
-        <p>
-          The backtest starts with a simulated balance of
-          <strong>$1,000</strong>. It does not use real money and
-          does not place real trades.
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <section class="panel">
-
-      <h2>Trade History</h2>
-
-      <div class="table-wrapper">
-
-        <table>
-
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Entry Time</th>
-              <th>Exit Time</th>
-              <th>Entry Price</th>
-              <th>Exit Price</th>
-              <th>P/L</th>
-              <th>Result</th>
-            </tr>
-          </thead>
-
-          <tbody id="tradeTable">
-
-            <tr>
-              <td colspan="7">
-                Waiting for historical data...
-              </td>
-            </tr>
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </section>
-
-
-    <section class="panel">
-
-      <h2>Debug Information</h2>
-
-      <div class="explanation">
-
-        <p>
-          <strong>Data source:</strong> Bitget public market data
-        </p>
-
-        <p>
-          <strong>Market:</strong> BTC/USDT
-        </p>
-
-        <p>
-          <strong>Candle interval:</strong> 5 minutes
-        </p>
-
-        <p>
-          <strong>Maximum candles requested:</strong> 200
-        </p>
-
-        <p>
-          <strong>Strategy:</strong> SMA 20 / SMA 50 crossover
-        </p>
-
-        <p>
-          <strong>Starting balance:</strong> $1,000
-        </p>
-
-      </div>
-
-    </section>
-
-
-    <div class="footer">
-      RazTech • Educational BTC/USDT Analyzer
-    </div>
-
-  </div>
-
+<div class="container">
+<header class="header">
+<svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RazTech trading logo">
+<defs><linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e5ff"/><stop offset="50%" stop-color="#8064ff"/><stop offset="100%" stop-color="#ff4fd8"/></linearGradient></defs>
+<circle cx="50" cy="50" r="46" fill="#0b1020" stroke="url(#ring)" stroke-width="3"/>
+<circle cx="50" cy="50" r="39" fill="none" stroke="#283652"/>
+<g stroke-width="2.5" stroke-linecap="round">
+<path d="M27 53V67M22 58H32V64H22Z" fill="#00e5ff" stroke="#00e5ff"/>
+<path d="M42 37V60M37 43H47V53H37Z" fill="#8064ff" stroke="#8064ff"/>
+<path d="M57 30V49M52 34H62V43H52Z" fill="#00e5ff" stroke="#00e5ff"/>
+<path d="M72 22V40M67 27H77V34H67Z" fill="#ff4fd8" stroke="#ff4fd8"/>
+<path d="M20 47L38 35L51 39L75 18M64 18H75V29" fill="none" stroke="#fff"/>
+</g>
+</svg>
+<h1 class="brand">RazTech</h1>
+<div class="subtitle">HISTORICAL BACKTEST · BTC/USDT SPOT</div>
+</header>
+
+<nav class="nav">
+<a href="index.html">← Live Dashboard</a>
+<button id="refreshButton" class="primary" onclick="refreshAll()">Refresh Backtest</button>
+</nav>
+
+<section class="panel">
+<h2>Backtest Status</h2>
+<div id="status" class="status" role="status" aria-live="polite">Loading completed BTC/USDT candles...</div>
+<div class="warning">Educational simulation only. It does not place real trades. Historical results do not guarantee future performance. Fees, spread and slippage are not included.</div>
+<p class="explanation">Last successful refresh: <strong id="updatedAt">Not yet updated</strong></p>
+</section>
+
+<section class="panel">
+<h2>Latest SMA Strategy Signal</h2>
+<div class="stats">
+<div class="stat"><div class="stat-label">Current Strategy State</div><div id="signal" class="stat-value neutral">Loading...</div></div>
+<div class="stat"><div class="stat-label">Reference Price</div><div id="referencePrice" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Signal Candle Time</div><div id="signalTime" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">SMA 20 / SMA 50</div><div id="smaState" class="stat-value neutral">—</div></div>
+</div>
+<p id="signalDetails" class="explanation">Checking completed candles...</p>
+</section>
+
+<section class="panel">
+<h2>Backtest Results</h2>
+<div class="stats">
+<div class="stat"><div class="stat-label">Completed Trades</div><div id="completedTrades" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Open Position</div><div id="openPosition" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Winning Trades</div><div id="winningTrades" class="stat-value positive">—</div></div>
+<div class="stat"><div class="stat-label">Win Rate</div><div id="winRate" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Net P/L</div><div id="netPL" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Ending Balance</div><div id="endingBalance" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Candles Tested</div><div id="candlesTested" class="stat-value neutral">—</div></div>
+<div class="stat"><div class="stat-label">Current BTC Price</div><div id="currentPrice" class="stat-value neutral">—</div></div>
+</div>
+<p id="resultDetails" class="explanation">Waiting for market data...</p>
+</section>
+
+<section class="panel">
+<h2>How the Strategy Works</h2>
+<div class="explanation">
+<p><strong>BUY / simulated entry:</strong> SMA 20 crosses from at or below SMA 50 to above SMA 50.</p>
+<p><strong>SELL / simulated exit:</strong> SMA 20 crosses from at or above SMA 50 to below SMA 50.</p>
+<p>A signal is confirmed using a completed five-minute candle. The backtest executes at the next candle's opening price when that next candle is available.</p>
+<p>The simulation starts with <strong>1,000 USDT</strong>. It uses the available historical Spot candles and does not use real money.</p>
+</div>
+</section>
+
+<section class="panel">
+<h2>Trade History</h2>
+<div class="table-wrapper">
+<table>
+<thead><tr><th>#</th><th>Entry Time</th><th>Exit Time</th><th>Entry Price</th><th>Exit Price</th><th>P/L</th><th>Result</th></tr></thead>
+<tbody id="tradeTable"><tr><td colspan="7">Waiting for historical data...</td></tr></tbody>
+</table>
+</div>
+</section>
+
+<section class="panel">
+<h2>Data Information</h2>
+<div class="explanation">
+<p><strong>Data source:</strong> Bitget public market data</p>
+<p><strong>Market:</strong> BTC/USDT Spot</p>
+<p><strong>Candle interval:</strong> 5 minutes</p>
+<p><strong>Maximum candles requested:</strong> 200</p>
+<p><strong>Strategy:</strong> SMA 20 / SMA 50 crossover</p>
+<p><strong>Starting virtual balance:</strong> 1,000 USDT</p>
+</div>
+</section>
+<div class="footer">RazTech • Educational BTC/USDT Analyzer</div>
+</div>
 
 <script>
+const TICKER_URL='https://api.bitget.com/api/v3/market/tickers?category=SPOT&symbol=BTCUSDT';
+const CANDLES_URL='https://api.bitget.com/api/v3/market/candles?category=SPOT&symbol=BTCUSDT&interval=5m&limit=200';
+const STARTING_BALANCE=1000;
+let busy=false;
 
-const API_URL =
-  "https://api.bitget.com/api/v2/mix/market/candles" +
-  "?symbol=BTCUSDT" +
-  "&productType=USDT-FUTURES" +
-  "&granularity=5m" +
-  "&limit=200";
+function money(v){return Number(v).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' USDT';}
+function formatTime(t){return new Date(t*1000).toLocaleString();}
+function setText(id,value){document.getElementById(id).textContent=value;}
 
+async function getJSON(url){
+ const r=await fetch(url);
+ if(!r.ok)throw new Error('HTTP '+r.status);
+ const j=await r.json();
+ if(j.code&&j.code!=='00000')throw new Error(j.msg||'Bitget request failed');
+ return j;
+}
 
-const STARTING_BALANCE = 1000;
+function calculateSMA(closes,period){
+ const out=new Array(closes.length).fill(null);
+ let sum=0;
+ for(let i=0;i<closes.length;i++){
+  sum+=closes[i];
+  if(i>=period)sum-=closes[i-period];
+  if(i>=period-1)out[i]=sum/period;
+ }
+ return out;
+}
 
+function showSignal(candles,sma20,sma50){
+ const i=candles.length-1;
+ const previous=i-1;
+ const f=sma20[i],s=sma50[i],pf=sma20[previous],ps=sma50[previous];
+ const c=candles[i];
+ let label,detail,cls='neutral';
 
-/* --------------------------------
-   SMA CALCULATION
--------------------------------- */
+ if(pf<=ps&&f>s){
+  label='BULLISH CROSSOVER';cls='positive';
+  detail='Potential strategy entry signal. The simulation uses the next candle open for entry when available.';
+ }else if(pf>=ps&&f<s){
+  label='BEARISH CROSSOVER';cls='negative';
+  detail='Potential strategy exit signal. The simulation uses the next candle open for exit when available.';
+ }else if(f>s){
+  label='SMA 20 ABOVE SMA 50';cls='positive';
+  detail='No new crossover on the latest completed candle. The shorter average is above the longer average.';
+ }else{
+  label='SMA 20 BELOW SMA 50';cls='negative';
+  detail='No new crossover on the latest completed candle. The shorter average is below the longer average.';
+ }
 
-function calculateSMA(data, period) {
+ const signalEl=document.getElementById('signal');
+ signalEl.textContent=label;signalEl.className='stat-value '+cls;
+ setText('referencePrice',money(c.close));
+ setText('signalTime',formatTime(c.time));
+ setText('smaState',f>s?'SMA 20 > SMA 50':f<s?'SMA 20 < SMA 50':'Averages equal');
+ setText('signalDetails',detail+' Reference price is the completed candle close, not a guaranteed execution price.');
+}
 
-  const result = new Array(data.length).fill(null);
-
-  for (let i = period - 1; i < data.length; i++) {
-
-    let sum = 0;
-
-    for (let j = i - period + 1; j <= i; j++) {
-      sum += data[j].close;
-    }
-
-    result[i] = sum / period;
+function runSimulation(candles,sma20,sma50){
+ let balance=STARTING_BALANCE,position=null;
+ const trades=[];
+ for(let i=50;i<candles.length-1;i++){
+  const pf=sma20[i-1],ps=sma50[i-1],f=sma20[i],s=sma50[i];
+  if([pf,ps,f,s].some(v=>v===null))continue;
+  const buy=pf<=ps&&f>s;
+  const sell=pf>=ps&&f<s;
+  const next=candles[i+1];
+  if(!position&&buy){
+   position={entryTime:next.time,entryPrice:next.open,stake:balance};
+  }else if(position&&sell){
+   const pnl=position.stake*(next.open/position.entryPrice-1);
+   balance+=pnl;
+   trades.push({entryTime:position.entryTime,exitTime:next.time,entryPrice:position.entryPrice,exitPrice:next.open,profit:pnl});
+   position=null;
   }
-
-  return result;
+ }
+ const last=candles[candles.length-1].close;
+ const floating=position?position.stake*(last/position.entryPrice-1):0;
+ return {balance,trades,position,floating,ending:balance+floating,net:balance-STARTING_BALANCE+floating,last};
 }
 
-
-/* --------------------------------
-   FORMAT DATE
--------------------------------- */
-
-function formatTime(timestamp) {
-
-  return new Date(Number(timestamp)).toLocaleString();
+function displayTrades(trades){
+ const table=document.getElementById('tradeTable');
+ table.replaceChildren();
+ if(!trades.length){
+  const row=table.insertRow();const cell=row.insertCell();
+  cell.colSpan=7;cell.textContent='No completed trades were generated during this historical period.';
+  return;
+ }
+ trades.forEach((t,i)=>{
+  const row=table.insertRow();
+  [String(i+1),formatTime(t.entryTime),formatTime(t.exitTime),money(t.entryPrice),money(t.exitPrice)].forEach(v=>row.insertCell().textContent=v);
+  const pnlCell=row.insertCell();pnlCell.textContent=(t.profit>=0?'+':'')+money(t.profit);pnlCell.className=t.profit>=0?'positive':'negative';
+  const result=row.insertCell();result.textContent=t.profit>0?'WIN':'LOSS';result.className=t.profit>0?'buy':'sell';
+ });
 }
 
+async function refreshAll(){
+ if(busy)return;
+ busy=true;
+ const btn=document.getElementById('refreshButton');
+ btn.disabled=true;btn.textContent='Refreshing...';
+ setText('status','Refreshing Bitget Spot market data...');
+ try{
+  const [ticker,candleResponse]=await Promise.all([getJSON(TICKER_URL),getJSON(CANDLES_URL)]);
+  if(!Array.isArray(ticker.data)||!ticker.data.length)throw new Error('No current market price returned');
+  if(!Array.isArray(candleResponse.data)||!candleResponse.data.length)throw new Error('No historical candle data returned');
 
-/* --------------------------------
-   FORMAT MONEY
--------------------------------- */
+  const t=ticker.data[0];
+  const current=Number(t.lastPr??t.lastPrice??t.last??t.close);
+  if(!Number.isFinite(current)||current<=0)throw new Error('Invalid current price');
 
-function money(value) {
+  const now=Math.floor(Date.now()/1000);
+  let candles=candleResponse.data.map(r=>{
+   let time=Number(r[0]);if(time>1e12)time=Math.floor(time/1000);
+   return {time:Math.floor(time),open:Number(r[1]),high:Number(r[2]),low:Number(r[3]),close:Number(r[4])};
+  }).filter(c=>Number.isFinite(c.time)&&[c.open,c.high,c.low,c.close].every(v=>Number.isFinite(v)&&v>0)&&c.high>=c.low)
+  .sort((a,b)=>a.time-b.time);
+  candles=candles.filter((c,i)=>i===0||c.time!==candles[i-1].time);
+  candles=candles.filter(c=>c.time+300<=now);
 
-  return "$" + Number(value).toFixed(2);
+  if(candles.length<52)throw new Error('Not enough completed candles for SMA 50 and backtesting');
+
+  const closes=candles.map(c=>c.close);
+  const sma20=calculateSMA(closes,20),sma50=calculateSMA(closes,50);
+  showSignal(candles,sma20,sma50);
+
+  const result=runSimulation(candles,sma20,sma50);
+  const completed=result.trades.length;
+  const wins=result.trades.filter(t=>t.profit>0).length;
+  const rate=completed?wins/completed*100:null;
+
+  setText('completedTrades',completed);
+  setText('winningTrades',wins);
+  setText('winRate',rate===null?'N/A':rate.toFixed(1)+'%');
+
+  const pl=document.getElementById('netPL');
+  pl.textContent=(result.net>=0?'+':'')+money(result.net);
+  pl.className='stat-value '+(result.net>0?'positive':result.net<0?'negative':'neutral');
+
+  setText('endingBalance',money(result.ending));
+  setText('candlesTested',candles.length);
+  setText('currentPrice',money(current));
+
+  const open=document.getElementById('openPosition');
+  open.textContent=result.position?'LONG':'NONE';
+  open.className='stat-value '+(result.position?'positive':'neutral');
+
+  displayTrades(result.trades);
+  setText('status','Backtest refreshed successfully at '+new Date().toLocaleTimeString()+'.');
+  setText('updatedAt',new Date().toLocaleString());
+  setText('resultDetails','Tested '+candles.length+' completed five-minute candles. '+(result.position?'One simulated LONG position remains open and is valued at the latest completed close. ':'No simulated position remains open. ')+'Net P/L includes unrealized P/L when a position is open. Fees and slippage are excluded.');
+ }catch(error){
+  console.error(error);
+  setText('status','Refresh failed: '+error.message+'. Please try again.');
+ }finally{
+  busy=false;btn.disabled=false;btn.textContent='Refresh Backtest';
+ }
 }
-
-
-/* --------------------------------
-   MAIN BACKTEST
--------------------------------- */
-
-async function runBacktest() {
-
-  const status =
-    document.getElementById("status");
-
-  try {
-
-    status.textContent =
-      "Downloading historical BTC/USDT candles...";
-
-
-    const response =
-      await fetch(API_URL);
-
-
-    if (!response.ok) {
-      throw new Error(
-        "HTTP error " + response.status
-      );
-    }
-
-
-    const json =
-      await response.json();
-
-
-    if (!json.data || !Array.isArray(json.data)) {
-      throw new Error(
-        "Historical candle data was not returned."
-      );
-    }
-
-
-    /*
-      Bitget candle format:
-
-      [
-        timestamp,
-        open,
-        high,
-        low,
-        close,
-        volume,
-        ...
-      ]
-    */
-
-    let candles = json.data.map(c => {
-
-      return {
-        time: Number(c[0]),
-        open: Number(c[1]),
-        high: Number(c[2]),
-        low: Number(c[3]),
-        close: Number(c[4])
-      };
-
-    });
-
-
-    /*
-      Sort oldest → newest.
-    */
-
-    candles.sort(
-      (a, b) => a.time - b.time
-    );
-
-
-    if (candles.length < 50) {
-
-      throw new Error(
-        "Not enough candles to calculate SMA 50."
-      );
-
-    }
-
-
-    /*
-      Calculate SMA 20 and SMA 50.
-    */
-
-    const closes =
-      candles.map(c => c.close);
-
-    const sma20 =
-      calculateSMA(closes, 20);
-
-    const sma50 =
-      calculateSMA(closes, 50);
-
-
-    /*
-      Backtest variables.
-    */
-
-    let balance =
-      STARTING_BALANCE;
-
-    let position = null;
-
-    let completedTrades = [];
-
-    let winningTrades = 0;
-
-
-    /*
-      Start at candle 50 because
-      SMA 50 is needed first.
-    */
-
-    for (
-      let i = 50;
-      i < candles.length;
-      i++
-    ) {
-
-      const previousSMA20 =
-        sma20[i - 1];
-
-      const previousSMA50 =
-        sma50[i - 1];
-
-      const currentSMA20 =
-        sma20[i];
-
-      const currentSMA50 =
-        sma50[i];
-
-
-      if (
-        previousSMA20 === null ||
-        previousSMA50 === null ||
-        currentSMA20 === null ||
-        currentSMA50 === null
-      ) {
-        continue;
-      }
-
-
-      /*
-        BUY CROSSOVER
-
-        Previous:
-        SMA20 <= SMA50
-
-        Current:
-        SMA20 > SMA50
-      */
-
-      const buySignal =
-        previousSMA20 <= previousSMA50 &&
-        currentSMA20 > currentSMA50;
-
-
-      /*
-        SELL CROSSOVER
-
-        Previous:
-        SMA20 >= SMA50
-
-        Current:
-        SMA20 < SMA50
-      */
-
-      const sellSignal =
-        previousSMA20 >= previousSMA50 &&
-        currentSMA20 < currentSMA50;
-
-
-      /*
-        OPEN LONG POSITION
-      */
-
-      if (
-        buySignal &&
-        position === null
-      ) {
-
-        position = {
-          entryTime: candles[i].time,
-          entryPrice: candles[i].close
-        };
-
-      }
-
-
-      /*
-        CLOSE LONG POSITION
-      */
-
-      if (
-        sellSignal &&
-        position !== null
-      ) {
-
-        const exitPrice =
-          candles[i].close;
-
-        const entryPrice =
-          position.entryPrice;
-
-
-        /*
-          Simulated percentage return.
-        */
-
-        const percentReturn =
-          (exitPrice - entryPrice)
-          / entryPrice;
-
-
-        const profit =
-          balance * percentReturn;
-
-
-        balance += profit;
-
-
-        const winning =
-          profit > 0;
-
-
-        if (winning) {
-          winningTrades++;
-        }
-
-
-        completedTrades.push({
-
-          entryTime:
-            position.entryTime,
-
-          exitTime:
-            candles[i].time,
-
-          entryPrice:
-            entryPrice,
-
-          exitPrice:
-            exitPrice,
-
-          profit:
-            profit,
-
-          winning:
-            winning
-
-        });
-
-
-        position = null;
-
-      }
-
-    }
-
-
-    /*
-      Display results.
-    */
-
-    const completed =
-      completedTrades.length;
-
-
-    const winRate =
-      completed > 0
-        ? (winningTrades / completed) * 100
-        : 0;
-
-
-    const netPL =
-      balance - STARTING_BALANCE;
-
-
-    document.getElementById(
-      "completedTrades"
-    ).textContent = completed;
-
-
-    document.getElementById(
-      "winningTrades"
-    ).textContent = winningTrades;
-
-
-    document.getElementById(
-      "winRate"
-    ).textContent =
-      winRate.toFixed(2) + "%";
-
-
-    document.getElementById(
-      "netPL"
-    ).textContent =
-      money(netPL);
-
-
-    document.getElementById(
-      "endingBalance"
-    ).textContent =
-      money(balance);
-
-
-    document.getElementById(
-      "candlesTested"
-    ).textContent =
-      candles.length;
-
-
-    document.getElementById(
-      "currentPrice"
-    ).textContent =
-      money(candles[candles.length - 1].close);
-
-
-    /*
-      Open position status.
-    */
-
-    const positionElement =
-      document.getElementById(
-        "openPosition"
-      );
-
-
-    if (position !== null) {
-
-      positionElement.textContent =
-        "LONG";
-
-      positionElement.className =
-        "stat-value positive";
-
-    } else {
-
-      positionElement.textContent =
-        "NONE";
-
-      positionElement.className =
-        "stat-value neutral";
-
-    }
-
-
-    /*
-      Display P/L color.
-    */
-
-    const plElement =
-      document.getElementById("netPL");
-
-
-    if (netPL > 0) {
-
-      plElement.className =
-        "stat-value positive";
-
-    } else if (netPL < 0) {
-
-      plElement.className =
-        "stat-value negative";
-
-    } else {
-
-      plElement.className =
-        "stat-value neutral";
-
-    }
-
-
-    /*
-      Display trade table.
-    */
-
-    const table =
-      document.getElementById(
-        "tradeTable"
-      );
-
-
-    table.innerHTML = "";
-
-
-    if (completedTrades.length === 0) {
-
-      table.innerHTML = `
-        <tr>
-          <td colspan="7">
-            No completed trades were generated
-            during this historical period.
-          </td>
-        </tr>
-      `;
-
-    } else {
-
-      completedTrades.forEach(
-        (trade, index) => {
-
-          const row =
-            document.createElement("tr");
-
-
-          row.innerHTML = `
-
-            <td>${index + 1}</td>
-
-            <td>
-              ${formatTime(trade.entryTime)}
-            </td>
-
-            <td>
-              ${formatTime(trade.exitTime)}
-            </td>
-
-            <td>
-              ${money(trade.entryPrice)}
-            </td>
-
-            <td>
-              ${money(trade.exitPrice)}
-            </td>
-
-            <td class="${
-              trade.profit >= 0
-                ? "positive"
-                : "negative"
-            }">
-              ${money(trade.profit)}
-            </td>
-
-            <td class="${
-              trade.winning
-                ? "buy"
-                : "sell"
-            }">
-              ${
-                trade.winning
-                  ? "WIN"
-                  : "LOSS"
-              }
-            </td>
-
-          `;
-
-          table.appendChild(row);
-
-        }
-      );
-
-    }
-
-
-    /*
-      Status message.
-    */
-
-    let statusText =
-      `Backtest complete: ` +
-      `${completed} completed trade(s) ` +
-      `from ${candles.length} candles.`;
-
-    if (position !== null) {
-
-      statusText +=
-        " There is currently an open simulated LONG position.";
-
-    }
-
-    status.textContent =
-      statusText;
-
-  }
-
-  catch (error) {
-
-    console.error(error);
-
-    status.textContent =
-      "Backtest error: " +
-      error.message;
-
-  }
-
-}
-
-
-/*
-  Start automatically.
-*/
-
-runBacktest();
-
+refreshAll();
 </script>
-
 </body>
-          </html>
+</html>
