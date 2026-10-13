@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080c16">
+<title>RazTech | Crypto Intelligence</title>
+<style>
+:root{color-scheme:dark;--bg:#080c16;--panel:#101827;--panel2:#151f31;--line:#26354b;--text:#eef3ff;--muted:#98a9c3;--blue:#66a7ff;--green:#46d7a0;--red:#ff7185}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#13243b 0%,var(--bg) 55%);color:var(--text);font-family:Inter,Arial,sans-serif;min-height:100vh}
+header{padding:20px clamp(16px,4vw,42px);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border:1px solid #4e8ddd;border-radius:50%;display:grid;place-items:center;color:var(--blue);font-weight:900;font-size:18px;box-shadow:0 0 25px #397fd933}.brand h1{font-size:20px;margin:0;letter-spacing:1px}.brand p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.status{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:8px 11px;border-radius:20px}
+main{max-width:1180px;margin:auto;padding:24px 16px 40px}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.topline h2{margin:0;font-size:23px}.controls{display:flex;gap:8px;flex-wrap:wrap}
+select,button,input,textarea{font:inherit}select,.btn,input,textarea{background:#0d1523;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:11px 12px}button{cursor:pointer}.btn{background:#17263b}.btn.primary{background:#397fe0;border-color:#397fe0;font-weight:700}.grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);gap:16px}.panel{background:linear-gradient(160deg,#111b2b,#0d1421);border:1px solid var(--line);border-radius:17px;padding:18px;min-width:0;box-shadow:0 12px 32px #0002}.panel h3{margin:0 0 15px;font-size:16px}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.metric{background:#151f30;border:1px solid #26354a;padding:13px;border-radius:12px;min-width:0}.metric span{display:block;color:var(--muted);font-size:11px;margin-bottom:8px}.metric strong{font-size:clamp(16px,2.8vw,23px);overflow-wrap:anywhere}.green{color:var(--green)}.red{color:var(--red)}.muted{color:var(--muted)}.signal{margin-top:12px;border-radius:12px;background:#152237;padding:14px;display:flex;justify-content:space-between;gap:10px;align-items:center}.signal strong{color:var(--blue)}.chart-wrap{margin-top:15px;height:220px;display:flex;align-items:end;gap:3px;padding:10px 0 4px;border-bottom:1px solid var(--line);overflow:hidden}.bar{flex:1;min-width:2px;border-radius:3px 3px 0 0;background:#4288e8;opacity:.85}.bar.down{background:#e8667c}.legend{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:8px}.chat-panel{display:flex;flex-direction:column;min-height:420px}.chat-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.chat-head h3{margin-bottom:6px}.chat-intro{font-size:12px;color:var(--muted);margin:0 0 12px}.messages{flex:1;min-height:180px;max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:8px 0 14px}.bubble{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5;font-size:13px;padding:11px 13px;border-radius:13px;max-width:95%}.bubble.bot{background:#17243a;border:1px solid #293b56;align-self:flex-start}.bubble.user{background:#2257a0;align-self:flex-end}.chat-form{display:flex;gap:8px;align-items:end}.chat-form textarea{resize:vertical;min-height:46px;max-height:120px;flex:1;width:100%}.chat-form button{min-height:46px}.quick{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0 14px}.quick button{font-size:11px;padding:7px 9px}.disclaimer{font-size:11px;line-height:1.5;color:var(--muted);margin-top:14px}.footer{margin-top:18px;color:var(--muted);font-size:11px;text-align:center}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.panel{padding:15px}.chat-panel{min-height:430px}.metrics{gap:7px}.metric{padding:10px}.metric span{font-size:10px}.topline h2{font-size:20px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">R</div><div><h1>RAZTECH</h1><p>CRYPTO INTELLIGENCE · AI ASSISTANT</p></div></div><div class="status" id="connection">Checking service…</div></header>
+<main>
+<div class="topline"><h2>Market dashboard</h2><div class="controls"><select id="symbol" aria-label="Cryptocurrency"><option value="BTCUSDT">BTC / USDT</option><option value="ETHUSDT">ETH / USDT</option><option value="SOLUSDT">SOL / USDT</option></select><select id="interval" aria-label="Chart interval"><option value="15m">15 minutes</option><option value="1h" selected>1 hour</option><option value="4h">4 hours</option><option value="1d">1 day</option></select><button class="btn" id="refresh">Refresh</button></div></div>
+<div class="grid">
+<section class="panel"><h3 id="pairTitle">BTC / USDT overview</h3><div class="metrics">
+<div class="metric"><span>Latest price (USDT)</span><strong id="price">Loading…</strong></div>
+<div class="metric"><span>Previous candle change</span><strong id="change">—</strong></div>
+<div class="metric"><span>Trend estimate</span><strong id="trend">—</strong></div>
+</div>
+<div class="signal"><div><div class="muted" style="font-size:11px;margin-bottom:5px">SIMPLE TREND CHECK</div><strong id="signal">Loading market data…</strong></div><span class="muted" id="timeLabel">—</span></div>
+<h3 style="margin-top:20px">Recent candle movement</h3><div class="chart-wrap" id="chart" aria-label="Recent price movement chart"></div><div class="legend"><span id="lowLabel">Low: —</span><span>Last 50 candles</span><span id="highLabel">High: —</span></div>
+<p class="disclaimer" id="marketNote">Loading data from Binance public market data.</p></section>
+<section class="panel chat-panel"><div class="chat-head"><h3>RazTech AI Assistant</h3><span class="status">AI chat</span></div><p class="chat-intro">Ask about market signals, risk management, coding, school, or general topics.</p>
+<div class="quick"><button class="btn" data-prompt="Explain the current BTC/USDT trend in simple words.">Explain trend</button><button class="btn" data-prompt="What risks should a beginner understand before trading crypto?">Trading risks</button><button class="btn" data-prompt="What can you help me with?">General help</button></div>
+<div class="messages" id="messages" aria-live="polite"><div class="bubble bot">Hi! I'm RazTech AI. I can explain the dashboard and trading concepts, or answer general questions. I'm analysis-only and cannot place trades.</div></div>
+<form class="chat-form" id="chatForm"><textarea id="message" placeholder="Ask RazTech AI…" aria-label="Message to RazTech AI" maxlength="4000" required></textarea><button class="btn primary" id="send" type="submit">Send</button></form>
+<p class="disclaimer">AI replies can be wrong. Verify important information. Crypto markets are risky; this tool does not execute trades and does not provide guaranteed signals.</p></section>
+</div><div class="footer">RAZTECH · Educational market information only · Not financial advice</div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+let market = null;
+const fmt = n => Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+function addBubble(text, who){const el=document.createElement('div');el.className='bubble '+who;el.textContent=text;$('messages').appendChild(el);$('messages').scrollTop=$('messages').scrollHeight;return el;}
+async function loadMarket(){
+ $('refresh').disabled=true;$('signal').textContent='Loading market data…';
+ try{
+  const res=await fetch(`/api/market?symbol=${encodeURIComponent($('symbol').value)}&interval=${encodeURIComponent($('interval').value)}`);
+  const data=await res.json();if(!res.ok)throw new Error(data.error||'Market data unavailable');
+  market=data;$('pairTitle').textContent=data.symbol.replace('USDT',' / USDT')+' overview';
+  $('price').textContent=fmt(data.price);$('change').textContent=(data.changePct>=0?'+':'')+data.changePct.toFixed(2)+'%';
+  $('change').className=data.changePct>=0?'green':'red';
+  $('trend').textContent=data.indicators.signal;$('trend').className=data.indicators.signal==='BULLISH BIAS'?'green':data.indicators.signal==='BEARISH BIAS'?'red':'';
+  $('signal').textContent=data.indicators.signal;$('timeLabel').textContent=$('interval').value+' interval';
+  const candles=data.candles.slice(-50);const min=Math.min(...candles.map(c=>c.low));const max=Math.max(...candles.map(c=>c.high));const span=max-min||1;
+  $('chart').replaceChildren();
+  candles.forEach(c=>{const b=document.createElement('div');b.className='bar '+(c.close<c.open?'down':'');b.style.height=Math.max(4,((c.close-min)/span)*100)+'%';b.title='Close: '+fmt(c.close);$('chart').appendChild(b);});
+  $('lowLabel').textContent='Low: '+fmt(min);$('highLabel').textContent='High: '+fmt(max);
+  $('marketNote').textContent=`Source: ${data.source}. SMA20: ${data.indicators.sma20?fmt(data.indicators.sma20):'n/a'} · SMA50: ${data.indicators.sma50?fmt(data.indicators.sma50):'n/a'}. ${data.disclaimer}`;
+  $('connection').textContent='Market data connected';
+ }catch(e){$('signal').textContent='Market data unavailable';$('marketNote').textContent=e.message;$('connection').textContent='Check service / connection';}
+ finally{$('refresh').disabled=false;}
+}
+async function sendMessage(text){
+ const message=(text||$('message').value).trim();if(!message)return;
+ addBubble(message,'user');$('message').value='';$('send').disabled=true;
+ const waiting=addBubble('Thinking…','bot');
+ try{
+  const context=market?JSON.stringify({symbol:market.symbol,interval:market.interval,price:market.price,changePct:market.changePct,indicators:market.indicators}):'Market data is not available.';
+  const res=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,context})});
+  const data=await res.json();waiting.textContent=res.ok?(data.answer||'No answer returned.'):(data.error||'AI request failed.');
+ }catch(e){waiting.textContent='Could not reach RazTech server. Please try again.';}
+ finally{$('send').disabled=false;$('messages').scrollTop=$('messages').scrollHeight;}
+}
+$('refresh').addEventListener('click',loadMarket);$('symbol').addEventListener('change',loadMarket);$('interval').addEventListener('change',loadMarket);
+$('chatForm').addEventListener('submit',e=>{e.preventDefault();sendMessage();});
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>sendMessage(b.dataset.prompt)));
+fetch('/health').then(r=>r.json()).then(()=>{if(!$('connection').textContent.includes('Market data'))$('connection').textContent='RazTech service online';}).catch(()=>{$('connection').textContent='Service check failed';});
+loadMarket();
+</script>
+</body>
+</html>
